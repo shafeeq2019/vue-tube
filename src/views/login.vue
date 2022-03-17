@@ -75,11 +75,11 @@ export default {
       } catch (error) {
         let errorCode = error.code;
         if (errorCode == "auth/wrong-password") {
-          this.errorMessage = "wrong password!";
+          this.errorMessage = "Wrong password!";
         } else if (errorCode == "auth/user-not-found") {
-          this.errorMessage = "user not found!";
+          this.errorMessage = "User not found!";
         } else if (errorCode == "auth/invalid-email") {
-          this.errorMessage = "invalid email!";
+          this.errorMessage = "Invalid email!";
         } else {
           this.errorMessage = error.errorMessage;
         }
