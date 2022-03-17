@@ -1,3 +1,24 @@
-# Vue Tube
-Vue Tube is a simple project to learn and practice Vue js, Vuex state managment, Bootstrap 4, and Firebase.
-In this app you can create categories and save your videos in them and also play them.
+# Vuetube
+Vuetube is a simple project to learn and practice Vue js, Vuex state management, Bootstrap 4, and Firebase.
+In this app you can save videos in categories to find them quickly later.
+
+## Demo
+https://vuetube-1199b.firebaseapp.com/
+
+
+## Config
+You only need to add your web app's Firebase configuration ` ./src/firebase.js`
+
+
+## Build Setup
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run serve
+
+# build for production with minification
+npm run build
+
+```
