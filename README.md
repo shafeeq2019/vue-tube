@@ -7,7 +7,7 @@ https://vuetube-1199b.firebaseapp.com/
 
 
 ## Config
-You only need to add your web app's Firebase configuration ` ./src/firebase.js`
+You only need to add your web app's Firebase configuration to ` ./src/firebase.js`
 
 
 ## Build Setup
