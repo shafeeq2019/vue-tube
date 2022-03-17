@@ -58,7 +58,6 @@ const store = new Vuex.Store({
     },
     successAlertMutation: (state) => {
       state.showSuccessAlert = true;
-      console.log("Document successfully written!");
     },
     changeSelectedCategory: (state, payload) => {
       state.selectedCategory = payload;
@@ -72,9 +71,8 @@ const store = new Vuex.Store({
     logout: ({ commit }) => {
       const auth = getAuth();
       signOut(auth).then(() => {
-        console.log("sign out successfully");
+        commit("updateLoginStatus", { isAuthonticated: false });
       });
-      commit("updateLoginStatus", { isAuthonticated: false });
     },
     fetchAllData: async ({ commit, state }) => {
       const auth = getAuth();
@@ -137,7 +135,6 @@ const store = new Vuex.Store({
     },
     removeCategory: async ({ state }) => {
       try {
-        console.log(`removing ${state.selectedCategory}`);
         await deleteDoc(doc(db, "categories", state.selectedCategory));
         const q = query(
           collection(db, "videos"),
@@ -145,7 +142,6 @@ const store = new Vuex.Store({
         );
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach(async (v) => {
-          console.log(v.id, " => ", v.data());
           let video = doc(db, "videos", v.id);
           await deleteDoc(video);
         });

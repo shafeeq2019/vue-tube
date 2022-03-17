@@ -64,13 +64,7 @@ export default {
     async signIn() {
       try {
         const auth = getAuth();
-        let singIn = await signInWithEmailAndPassword(
-          auth,
-          this.email,
-          this.password
-        );
-        const user = singIn.user;
-        console.log(user);
+        await signInWithEmailAndPassword(auth, this.email, this.password);
         this.$router.push("/dashboard");
       } catch (error) {
         let errorCode = error.code;
