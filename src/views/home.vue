@@ -15,7 +15,7 @@
           </div>
           <hr />
           <p style="font-size:30px;">Free account</p>
-          <p>Createing a account on VueTube is free and will be</p>
+          <p>Createing an account on VueTube is free and will be</p>
           <router-link to="/signUp"
             ><b-button>Get started!</b-button></router-link
           >
