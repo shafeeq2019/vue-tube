@@ -137,6 +137,9 @@ const store = new Vuex.Store({
       }
     },
     removeCategory: async ({ state }) => {
+      if (!state.selectedCategory) {
+        return;
+      }
       try {
         await deleteDoc(doc(db, "categories", state.selectedCategory));
         const q = query(
