@@ -48,6 +48,8 @@
 
 <script>
 import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
+import getVideoId from "get-video-id";
+
 export default {
   data() {
     return {
@@ -65,14 +67,11 @@ export default {
     addVideoFunction() {
       let video;
       if (this.selectedCategory && this.videoURL && this.videoTitle) {
-        const embedLink =
-          "https://www.youtube.com/embed/" +
-          this.videoURL.split("watch?v=").pop();
-        //https://www.youtube.com/watch?v=zqclF5UPkEE
-        //https://www.youtube.com/embed/zqclF5UPkEE
+        const { id } = getVideoId(this.videoURL);
+        const embedLink = "https://www.youtube.com/embed/" + id;
         video = {
           title: this.videoTitle,
-          url: embedLink,
+          url: embedLink
         };
         this.addVideo(video);
       }
