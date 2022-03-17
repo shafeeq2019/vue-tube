@@ -121,6 +121,9 @@ const store = new Vuex.Store({
     },
     addCategory: async ({ commit, state }, categoryName) => {
       try {
+        if (!categoryName || !categoryName.replace(/\s/g, "").length) {
+          return;
+        }
         await setDoc(doc(collection(db, "categories")), {
           userID: state.userID,
           categoryName: categoryName,
