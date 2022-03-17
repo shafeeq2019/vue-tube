@@ -2,6 +2,13 @@
   <div style="margin-top:60px;">
     <b-container>
       <b-row class="justify-content-md-center">
+        <b-col lg="11">
+          <b-alert show variant="danger" v-if="errorMessage">
+            {{ errorMessage }}
+          </b-alert>
+        </b-col>
+      </b-row>
+      <b-row class="justify-content-md-center">
         <b-col lg="11"
           ><h3 style="margin-bottom:20px;text-align:left">Sign Up</h3></b-col
         >
@@ -56,6 +63,7 @@ export default {
       name: "",
       email: "",
       password: "",
+      errorMessage: "",
     };
   },
   computed: {
@@ -64,16 +72,14 @@ export default {
   methods: {
     ...mapActions(["fetchAllData"]),
     async signUp() {
-      if (this.name != null && this.email != null && this.password != null) {
+      if (this.name != "" && this.email != "" && this.password != "") {
         try {
-          console.log("signUp");
           const auth = getAuth();
           let signUp = await createUserWithEmailAndPassword(
             auth,
             this.email,
             this.password
           );
-          console.log(signUp);
           const user = signUp.user;
           await setDoc(doc(collection(db, "users")), {
             userName: this.name,
@@ -82,21 +88,22 @@ export default {
           });
           this.$router.push("/dashboard");
         } catch (error) {
-          console.log
           const errorCode = error.code;
-          const errorMessage = error.message;
           if (errorCode == "auth/wrong-password") {
-            this.errorMessage = "wrong password!";
+            this.errorMessage = "Wrong password!";
           } else if (errorCode == "auth/user-not-found") {
-            this.errorMessage = "user not found!";
+            this.errorMessage = "User not found!";
           } else if (errorCode == "auth/invalid-email") {
-            this.errorMessage = "invalid email!";
+            this.errorMessage = "Invalid email!";
+          } else if (errorCode == "auth/weak-password") {
+            this.errorMessage =
+              "Your password should be at least 6 characters!";
           } else {
             this.errorMessage = error.errorMessage;
           }
         }
       } else {
-        console.log("eeeee");
+        this.errorMessage = "You must enter a value for all required fields";
       }
     },
   },
