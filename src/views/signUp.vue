@@ -13,40 +13,43 @@
           ><h3 style="margin-bottom:20px;text-align:left">Sign Up</h3></b-col
         >
       </b-row>
-      <b-row class="justify-content-md-center">
-        <b-col lg="11"
-          ><b-form-input
-            type="text"
-            placeholder="Enter your name"
-            class="inputs"
-            v-model="name"
-        /></b-col>
-      </b-row>
-      <b-row class="justify-content-md-center">
-        <b-col lg="11"
-          ><b-form-input
-            type="email"
-            placeholder="Enter your Email"
-            class="inputs"
-            v-model="email"
-        /></b-col>
-      </b-row>
-      <b-row class="justify-content-md-center">
-        <b-col lg="11"
-          ><b-form-input
-            type="password"
-            placeholder="Enter your Password"
-            class="inputs"
-            v-model="password"
-        /></b-col>
-      </b-row>
-      <b-row class="justify-content-md-center">
-        <b-col lg="11">
-          <b-button @click="signUp()" style="margin-top:10px;"
-            >Sign Up</b-button
-          ></b-col
-        >
-      </b-row>
+      <b-form @submit="signUp">
+        <b-row class="justify-content-md-center">
+          <b-col lg="11"
+            ><b-form-input
+              type="text"
+              placeholder="Enter your name"
+              class="inputs"
+              v-model="name"
+          /></b-col>
+        </b-row>
+        <b-row class="justify-content-md-center">
+          <b-col lg="11"
+            ><b-form-input
+              type="email"
+              placeholder="Enter your Email"
+              class="inputs"
+              v-model="email"
+          /></b-col>
+        </b-row>
+        <b-row class="justify-content-md-center">
+          <b-col lg="11"
+            ><b-form-input
+              type="password"
+              placeholder="Enter your Password"
+              class="inputs"
+              v-model="password"
+          /></b-col>
+        </b-row>
+
+        <b-row class="justify-content-md-center">
+          <b-col lg="11">
+            <b-button type="submit" style="margin-top:10px;"
+              >Sign Up</b-button
+            ></b-col
+          >
+        </b-row>
+      </b-form>
     </b-container>
   </div>
 </template>
@@ -71,7 +74,8 @@ export default {
   },
   methods: {
     ...mapActions(["fetchAllData"]),
-    async signUp() {
+    async signUp(event) {
+      event.preventDefault();
       if (this.name != "" && this.email != "" && this.password != "") {
         try {
           const auth = getAuth();
@@ -90,20 +94,20 @@ export default {
         } catch (error) {
           const errorCode = error.code;
           if (errorCode == "auth/wrong-password") {
-            this.errorMessage = "Wrong password!";
+            this.errorMessage = "Wrong password !";
           } else if (errorCode == "auth/user-not-found") {
-            this.errorMessage = "User not found!";
+            this.errorMessage = "User not found !";
           } else if (errorCode == "auth/invalid-email") {
-            this.errorMessage = "Invalid email!";
+            this.errorMessage = "Invalid email !";
           } else if (errorCode == "auth/weak-password") {
             this.errorMessage =
-              "Your password should be at least 6 characters!";
+              "Your password should be at least 6 characters !";
           } else {
             this.errorMessage = error.errorMessage;
           }
         }
       } else {
-        this.errorMessage = "You must enter a value for all required fields";
+        this.errorMessage = "All fields are required !";
       }
     },
   },
