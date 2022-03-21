@@ -5,8 +5,8 @@ import home from "./views/home.vue";
 import about from "./views/about.vue";
 import signUp from "./views/signUp.vue";
 import login from "./views/login.vue";
-import dashboard from "./components/dashboard.vue";
-import test from "./components/test.vue";
+import dashboard from "./views/dashboard.vue";
+import test from "./views/test.vue";
 import store from "./store.js";
 
 Vue.use(VueRouter);
@@ -52,12 +52,12 @@ const router = new VueRouter({
         hideForAuth: true,
       },
     },
-    {
-      path: "/test",
-      name: "test",
-      component: test,
-      meta: {},
-    },
+    // {
+    //   path: "/test",
+    //   name: "test",
+    //   component: test,
+    //   meta: {},
+    // },
   ],
 });
 

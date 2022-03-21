@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import videoComponent from "./videoComponent.vue";
+import videoComponent from "../components/videoComponent.vue";
 import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
 import GlobalComponents from "../GlobalComponents.js";
 
