@@ -5,6 +5,7 @@ import home from "./views/home.vue";
 import about from "./views/about.vue";
 import signUp from "./views/signUp.vue";
 import login from "./views/login.vue";
+import pageNotFound from "./views/pageNotFound.vue";
 import dashboard from "./views/dashboard.vue";
 import test from "./views/test.vue";
 import store from "./store.js";
@@ -51,6 +52,11 @@ const router = new VueRouter({
       meta: {
         hideForAuth: true,
       },
+    },
+    {
+      path: "*",
+      name: "pageNotFound",
+      component: pageNotFound
     },
     // {
     //   path: "/test",
