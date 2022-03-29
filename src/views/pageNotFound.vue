@@ -7,7 +7,6 @@
             <div class="four_zero_four_bg">
               <h1 class="text-center">404</h1>
             </div>
-
             <div class="contant_box_404">
               <h3 class="h2">
                 Look like you're lost
@@ -23,7 +22,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  
+};
 </script>
 
 <style scoped="true">

@@ -8,15 +8,13 @@
         >Please enter a name for the new category</b-alert
       >
       <b-form-input
+        class="inputs"
         type="text"
         placeholder="Enter a name for the category you want to add"
         v-model="category"
       />
       <div slot="modal-footer">
-        <b-button
-          class="btn"
-          size="sm"
-          @click="addCategory(category)"
+        <b-button class="btn" size="sm" @click="addCategory(category)"
           >Add Category</b-button
         >
       </div>

@@ -13,19 +13,19 @@
           type="text"
           placeholder="Enter a name for the video you want to add"
           v-model="videoTitle"
-          style="margin-bottom:5px;"
+          class="inputs"
         />
         <b-form-input
           type="url"
           placeholder="Enter a URL for the video you want to add"
           v-model="videoURL"
-          style="margin-bottom:5px;"
+          class="inputs"
         />
         <b-form-select
           v-model="selectedCategory"
           :options="getCategoriesToSelect"
           size="md"
-          class="mb-3"
+          class="inputs"
         >
           <template slot="first">
             <option :value="null" disabled>Please select a category</option>
@@ -71,7 +71,7 @@ export default {
         const embedLink = "https://www.youtube.com/embed/" + id;
         video = {
           title: this.videoTitle,
-          url: embedLink
+          url: embedLink,
         };
         this.addVideo(video);
       }

@@ -1,49 +1,47 @@
 <template>
-  <div style="margin-top:60px;">
-    <b-container>
-      <b-row class="justify-content-md-center">
-        <b-col lg="11">
-          <b-alert show variant="danger" v-if="errorMessage">
-            {{ errorMessage }}
-          </b-alert>
-        </b-col>
+  <b-container class="content">
+    <b-row class="justify-content-center">
+      <b-col lg="11">
+        <b-alert show variant="danger" v-if="errorMessage">
+          {{ errorMessage }}
+        </b-alert>
+      </b-col>
+    </b-row>
+    <b-row class="justify-content-center">
+      <b-col lg="11">
+        <h3 class="heading">Login</h3>
+      </b-col>
+    </b-row>
+    <b-form @submit="signIn">
+      <b-row class="justify-content-center">
+        <b-col lg="11"
+          ><b-form-input
+            type="email"
+            size="large"
+            placeholder="Enter your Email"
+            v-model="email"
+            class="inputs"
+        /></b-col>
       </b-row>
-      <b-row class="justify-content-md-center">
-        <b-col lg="11">
-          <h3 style="margin-bottom:20px;text-align:left">Login</h3>
-        </b-col>
+      <b-row class="justify-content-center">
+        <b-col lg="11"
+          ><b-form-input
+            type="password"
+            size="large"
+            placeholder="Enter your Password"
+            class="inputs"
+            v-model="password"
+        /></b-col>
       </b-row>
-      <b-form @submit="signIn">
-        <b-row class="justify-content-md-center">
-          <b-col lg="11"
-            ><b-form-input
-              type="email"
-              size="large"
-              placeholder="Enter your Email"
-              v-model="email"
-              class="inputs"
-          /></b-col>
-        </b-row>
-        <b-row class="justify-content-md-center">
-          <b-col lg="11"
-            ><b-form-input
-              type="password"
-              size="large"
-              placeholder="Enter your Password"
-              class="inputs"
-              v-model="password"
-          /></b-col>
-        </b-row>
-        <b-row class="justify-content-md-center">
-          <b-col lg="11"
-            ><b-button style="margin-top:10px;" type="submit"
-              >Login</b-button
-            ></b-col
-          >
-        </b-row>
-      </b-form>
-    </b-container>
-  </div>
+      <b-row class="justify-content-center">
+        <b-col lg="11"
+          ><b-button class="submit-button" type="submit"
+            >Login</b-button
+          ></b-col
+        >
+      </b-row>
+    </b-form>
+  </b-container>
 </template>
 
 <script>

@@ -1,16 +1,12 @@
 <template lang="html">
-  <b-container>
-    <b-row align-v="center">
+  <b-container class="content text-center">
+    <b-row>
       <b-col>
-        <div id="content">
-          <div>
-            <h2 style="margin-bottom:20px">About VueTube</h2>
-            <p>
-              At VueTube you can sign up for free and start adding your
-              favourite YouTube videos right away.
-            </p>
-          </div>
-        </div>
+        <h2 style="heading">About VueTube</h2>
+        <p>
+          At VueTube you can sign up for free and start adding your favourite
+          YouTube videos right away.
+        </p>
       </b-col>
     </b-row>
   </b-container>
@@ -20,8 +16,8 @@
 import { mapState } from "vuex";
 export default {
   computed: {
-    ...mapState(["users"])
-  }
+    ...mapState(["users"]),
+  },
 };
 </script>
 

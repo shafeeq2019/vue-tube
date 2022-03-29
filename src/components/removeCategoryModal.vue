@@ -11,7 +11,7 @@
           v-model="selectedCategory"
           :options="getCategoriesToSelect"
           size="md"
-          class="mb-3"
+          class="inputs"
         >
           <template slot="first">
             <option :value="null" disabled>Please select a category</option>

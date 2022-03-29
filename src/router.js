@@ -27,7 +27,7 @@ const router = new VueRouter({
     {
       path: "/about",
       name: "about",
-      component: about,
+      component: about
     },
     {
       path: "/signUp",

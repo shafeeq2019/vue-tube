@@ -1,10 +1,9 @@
 <template lang="html">
-  <b-container>
-    <b-row align-v="center">
-      <b-col></b-col>
-      <b-col md="8">
+  <b-container class="content text-center">
+    <b-row>
+      <b-col>
         <div id="content">
-          <h2 id="title" style="margin-bottom:20px">Welcome to VueTube</h2>
+          <h2 id="title" class="heading">Welcome to VueTube</h2>
           <div>
             VueTube is a Website where you can add your favourite YouTube
             videos.
@@ -21,7 +20,6 @@
           >
         </div></b-col
       >
-      <b-col></b-col>
     </b-row>
   </b-container>
 </template>
@@ -35,6 +33,4 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
-
-</style>
+<style lang="css" scoped></style>
