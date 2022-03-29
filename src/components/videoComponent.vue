@@ -1,9 +1,9 @@
 <template lang="html">
   <div>
     <b-container>
-      <b-row style="margin-bottom:10px">
+      <b-row style="margin-bottom:10px;margin-top:10px">
         <b-col
-          ><h5 id="videoTitle">
+          ><h5>
             {{ videoObj.data.video.title }}
           </h5>
         </b-col>
@@ -59,26 +59,24 @@ export default {
 </script>
 
 <style lang="css" scoped>
-#videoTitle {
-    height: 90%;
-    width:100%;
-    display:flex;
-    align-items: center;
-    /* justify-content: center; */
-}
 .frame-container {
   position: relative;
-  height:250px;
-  margin-bottom:10px
+  height: 250px;
+  margin-bottom: 10px;
 }
 .iframe-button {
   display: none;
   position: absolute;
-  top: 15px;
-  left: 25px;
+  top: 10px;
+  right: 25px;
 }
 
 .frame-container:hover .iframe-button {
   display: initial;
+}
+
+iframe {
+  border: 1px solid black;
+  border-radius: 4px;
 }
 </style>
