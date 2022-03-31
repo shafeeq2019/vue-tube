@@ -35,9 +35,7 @@
       </b-row>
       <b-row class="justify-content-center">
         <b-col lg="11"
-          ><b-button class="submit-button" type="submit"
-            >Login</b-button
-          ></b-col
+          ><b-button class="submit-button" type="submit">Login</b-button></b-col
         >
       </b-row>
     </b-form>
@@ -45,11 +43,7 @@
 </template>
 
 <script>
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 export default {
   data() {
     return {

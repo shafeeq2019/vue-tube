@@ -24,14 +24,14 @@ const store = new Vuex.Store({
     showSuccessAlert: false,
     showErrorAlert: false,
     selectedCategory: null,
-    correntCategory: ""
+    correntCategory: "",
   },
   getters: {
     getCategoriesToSelect: (state) => {
       var options = state.categories.map((option) => {
         return {
           value: option.id,
-          text: option.data.categoryName
+          text: option.data.categoryName,
         };
       });
       return options;
@@ -76,7 +76,7 @@ const store = new Vuex.Store({
       const auth = getAuth();
       signOut(auth).then(() => {
         commit("updateLoginStatus", {
-          isAuthonticated: false
+          isAuthonticated: false,
         });
         commit("clearUserDataStates");
       });
@@ -87,13 +87,13 @@ const store = new Vuex.Store({
         if (user) {
           commit("updateLoginStatus", {
             isAuthonticated: true,
-            user: user
+            user: user,
           });
           await store.dispatch("fetchUserCategories");
           await store.dispatch("fetchUserVideos");
         } else {
           commit("updateLoginStatus", {
-            isAuthonticated: false
+            isAuthonticated: false,
           });
         }
       });
@@ -112,7 +112,7 @@ const store = new Vuex.Store({
         });
       });
       commit("updateUserCategories", {
-        userCategories: userCategories
+        userCategories: userCategories,
       });
     },
     fetchUserVideos: async ({ commit, state }) => {
@@ -129,7 +129,7 @@ const store = new Vuex.Store({
         });
       });
       commit("updateUserVideos", {
-        userVideos: videos
+        userVideos: videos,
       });
     },
     addCategory: async ({ commit, state }, categoryName) => {
@@ -140,14 +140,14 @@ const store = new Vuex.Store({
         await setDoc(doc(collection(db, "categories")), {
           userID: state.userID,
           categoryName: categoryName,
-          videos: []
+          videos: [],
         });
         commit("successAlertMutation");
         await store.dispatch("fetchUserCategories");
       } catch (error) {
         console.log(error);
         commit("errorAlertMutation", {
-          error: error.message
+          error: error.message,
         });
       }
     },
@@ -176,14 +176,14 @@ const store = new Vuex.Store({
         await setDoc(doc(collection(db, "videos")), {
           userID: state.userID,
           categoryID: state.selectedCategory,
-          video: payload
+          video: payload,
         });
         commit("successAlertMutation");
         await store.dispatch("fetchUserVideos");
       } catch (error) {
         console.log(error);
         commit("errorAlertMutation", {
-          error: error.message
+          error: error.message,
         });
       }
     },
@@ -194,7 +194,7 @@ const store = new Vuex.Store({
       } catch (error) {
         console.log(error);
       }
-    }
-  }
+    },
+  },
 });
 export default store;

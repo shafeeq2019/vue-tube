@@ -24,19 +24,26 @@
         </b-container>
       </b-tab>
     </b-tabs>
-    <div v-if="categories.length < 1">
-      <b-card
-        bg-variant="dark"
-        text-variant="white"
-        title="No Categories to view"
-        style="width:400px;"
-      >
-        <b-card-text>
-          you dont have any category yet
-        </b-card-text>
-        <b-button @click="toggleModal('CatModal')">click to add some</b-button>
-      </b-card>
-    </div>
+    <b-container v-if="categories.length == 0">
+      <b-row>
+        <b-col cols="12">
+          <div>
+            <b-card
+              bg-variant="dark"
+              text-variant="white"
+              title="No Categories to view"
+            >
+              <b-card-text>
+                you dont have any category yet
+              </b-card-text>
+              <b-button @click="toggleModal('CatModal')"
+                >click to add some</b-button
+              >
+            </b-card>
+          </div>
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -65,13 +72,14 @@ export default {
       "showErrorAlert",
       "selectedCategory",
       "videos",
-      "users"
+      "users",
     ]),
     ...mapGetters(["getCategoriesToSelect"]),
   },
 
   methods: {
-    ...mapMutations(["removeCategory", "fetchData"]),
+    ...mapMutations(["removeCategory"]),
+    ...mapActions(["fetchAllData"]),
     linkClass(idx) {
       if (this.tabIndex === idx) {
         return ["text-dark"];
@@ -96,6 +104,4 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
-
-</style>
+<style lang="css" scoped></style>

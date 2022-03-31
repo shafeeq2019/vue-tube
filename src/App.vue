@@ -44,7 +44,7 @@ export default {
   components: {
     ...GlobalComponents,
   },
-  data: function() {
+  data: function () {
     return {
       category: "",
     };
@@ -62,7 +62,6 @@ export default {
   },
   methods: {
     ...mapMutations([
-      "fetchData",
       "logout",
       "AddCategory",
       "clearField",
