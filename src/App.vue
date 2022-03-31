@@ -44,7 +44,7 @@ export default {
   components: {
     ...GlobalComponents,
   },
-  data: function () {
+  data: function() {
     return {
       category: "",
     };
@@ -79,6 +79,14 @@ export default {
 </script>
 
 <style>
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
 .content {
   margin-top: 80px;
 }
@@ -99,6 +107,7 @@ export default {
 .submit-button {
   margin-top: 10px;
 }
+
 .navbar-button {
   margin: 3px;
 }
