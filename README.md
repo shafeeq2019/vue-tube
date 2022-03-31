@@ -21,4 +21,6 @@ npm run serve
 # build for production with minification
 npm run build
 
+# build & deploy on firebase
+npm run deploy
 ```
