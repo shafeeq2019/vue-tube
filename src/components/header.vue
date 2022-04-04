@@ -28,6 +28,9 @@
             <template slot="button-content"
               ><em>{{ userEmail }}</em></template
             >
+            <b-dropdown-item @click="changeColorTheme()"
+              >{{ theme == "dark" ? "Light" : "Dark" }} Mode</b-dropdown-item
+            >
             <b-dropdown-item @click="logout()" to="/">Sign Out</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -38,6 +41,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
+import { getCurrentThem, loadTheme } from "./dark_mode.js";
 export default {
   components: {},
   computed: {
@@ -45,11 +49,29 @@ export default {
   },
   methods: {
     ...mapActions(["logout"]),
+    buttonText() {
+      return getCurrentThem();
+    },
+    changeColorTheme() {
+      let theme = getCurrentThem();
+      if (theme === "dark") {
+        theme = "light";
+      } else {
+        theme = "dark";
+      }
+      localStorage.setItem("vuetube.theme", theme);
+      this.theme = getCurrentThem();
+      loadTheme(theme);
+    },
   },
   data() {
-    return {};
+    return {
+      theme: "",
+    };
   },
-  created() {},
+  created() {
+    this.theme = getCurrentThem();
+  },
 };
 </script>
 

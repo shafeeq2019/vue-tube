@@ -82,9 +82,9 @@ export default {
     ...mapActions(["fetchAllData"]),
     linkClass(idx) {
       if (this.tabIndex === idx) {
-        return ["text-dark"];
+        return ["nav-tab-active"];
       } else {
-        return ["text-dark"];
+        return ["nav-tab"];
       }
     },
     toggleModal(ModalName) {
@@ -104,4 +104,18 @@ export default {
 };
 </script>
 
-<style lang="css" scoped></style>
+<style lang="css">
+.nav-tab {
+	color: var(--text);
+}
+
+.nav-tabs .nav-tab-active.active {
+	color: var(--text);
+	background-color: var(--tab_bkg);
+   border-bottom-color: transparent;
+}
+
+.nav-tabs .nav-tab:hover {
+	color:  var(--text);
+}
+</style>

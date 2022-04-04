@@ -68,15 +68,10 @@ export default {
   display: none;
   position: absolute;
   top: 10px;
-  right: 25px;
+  left: 25px;
 }
 
 .frame-container:hover .iframe-button {
   display: initial;
-}
-
-iframe {
-  border: 1px solid black;
-  border-radius: 4px;
 }
 </style>
