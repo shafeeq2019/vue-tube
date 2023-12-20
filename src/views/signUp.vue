@@ -68,7 +68,7 @@ export default {
             userEMail: user.email,
             uid: user.uid,
           });
-          this.$router.push("/dashboard").catch(()=>{});;
+          this.$router.push("/dashboard").catch(() => { });;
         } catch (error) {
           const errorCode = error.code;
           if (errorCode == "auth/weak-password") {
@@ -76,6 +76,9 @@ export default {
           }
           else if (errorCode == "auth/email-already-in-use") {
             this.errorMessage = "This email address is already in use. Please enter a different email address";
+          }
+          else if (errorCode == "auth/invalid-email") {
+            this.errorMessage = "Invalid email address!";
           }
           else {
             console.log(error.code);
