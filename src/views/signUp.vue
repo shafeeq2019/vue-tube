@@ -8,43 +8,25 @@
       </b-col>
     </b-row>
     <b-row class="justify-content-center">
-      <b-col lg="11"><h3 class="heading">Sign Up</h3></b-col>
+      <b-col lg="11">
+        <h3 class="heading">Sign Up</h3>
+      </b-col>
     </b-row>
     <b-form @submit="signUp">
       <b-row class="justify-content-center">
-        <b-col lg="11"
-          ><b-form-input
-            type="text"
-            placeholder="Enter your name"
-            class="inputs"
-            v-model="name"
-        /></b-col>
+        <b-col lg="11"><b-form-input type="text" placeholder="Enter your name" class="inputs" v-model="name" /></b-col>
       </b-row>
       <b-row class="justify-content-center">
-        <b-col lg="11"
-          ><b-form-input
-            type="email"
-            placeholder="Enter your Email"
-            class="inputs"
-            v-model="email"
-        /></b-col>
+        <b-col lg="11"><b-form-input type="email" placeholder="Enter your Email" class="inputs" v-model="email" /></b-col>
       </b-row>
       <b-row class="justify-content-center">
-        <b-col lg="11"
-          ><b-form-input
-            type="password"
-            placeholder="Enter your Password"
-            class="inputs"
-            v-model="password"
-        /></b-col>
+        <b-col lg="11"><b-form-input type="password" placeholder="Enter your Password" class="inputs"
+            v-model="password" /></b-col>
       </b-row>
 
       <b-row class="justify-content-center">
         <b-col lg="11">
-          <b-button type="submit" class="submit-button"
-            >Sign Up</b-button
-          ></b-col
-        >
+          <b-button type="submit" class="submit-button">Sign Up</b-button></b-col>
       </b-row>
     </b-form>
   </b-container>
@@ -86,20 +68,18 @@ export default {
             userEMail: user.email,
             uid: user.uid,
           });
-          this.$router.push("/dashboard");
+          this.$router.push("/dashboard").catch(()=>{});;
         } catch (error) {
           const errorCode = error.code;
-          if (errorCode == "auth/wrong-password") {
-            this.errorMessage = "Wrong password !";
-          } else if (errorCode == "auth/user-not-found") {
-            this.errorMessage = "User not found !";
-          } else if (errorCode == "auth/invalid-email") {
-            this.errorMessage = "Invalid email !";
-          } else if (errorCode == "auth/weak-password") {
-            this.errorMessage =
-              "Your password should be at least 6 characters !";
-          } else {
-            this.errorMessage = error.errorMessage;
+          if (errorCode == "auth/weak-password") {
+            this.errorMessage = "Your password should be at least 6 characters !";
+          }
+          else if (errorCode == "auth/email-already-in-use") {
+            this.errorMessage = "This email address is already in use. Please enter a different email address";
+          }
+          else {
+            console.log(error.code);
+            this.errorMessage = error.message;
           }
         }
       } else {
@@ -107,7 +87,7 @@ export default {
       }
     },
   },
-  created() {},
+  created() { },
 };
 </script>
 

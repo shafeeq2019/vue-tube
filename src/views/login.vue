@@ -14,29 +14,15 @@
     </b-row>
     <b-form @submit="signIn">
       <b-row class="justify-content-center">
-        <b-col lg="11"
-          ><b-form-input
-            type="email"
-            size="large"
-            placeholder="Enter your Email"
-            v-model="email"
-            class="inputs"
-        /></b-col>
+        <b-col lg="11"><b-form-input type="email" size="large" placeholder="Enter your Email" v-model="email"
+            class="inputs" /></b-col>
       </b-row>
       <b-row class="justify-content-center">
-        <b-col lg="11"
-          ><b-form-input
-            type="password"
-            size="large"
-            placeholder="Enter your Password"
-            class="inputs"
-            v-model="password"
-        /></b-col>
+        <b-col lg="11"><b-form-input type="password" size="large" placeholder="Enter your Password" class="inputs"
+            v-model="password" /></b-col>
       </b-row>
       <b-row class="justify-content-center">
-        <b-col lg="11"
-          ><b-button class="submit-button" type="submit">Login</b-button></b-col
-        >
+        <b-col lg="11"><b-button class="submit-button" type="submit">Login</b-button></b-col>
       </b-row>
     </b-form>
   </b-container>
@@ -63,7 +49,6 @@ export default {
           await signInWithEmailAndPassword(auth, this.email, this.password);
           this.$router.push("/dashboard");
         } catch (error) {
-          console.log(errorCode);
           let errorCode = error.code;
           if (errorCode == "auth/wrong-password") {
             this.errorMessage = "Wrong password !";
@@ -72,20 +57,20 @@ export default {
           } else if (errorCode == "auth/invalid-email") {
             this.errorMessage = "Invalid email !";
           } else {
-            this.errorMessage = error.errorMessage;
+            this.errorMessage = error.message;
           }
         }
       } else {
         this.errorMessage = "All fields are required !";
       }
     },
-    created() {},
+    created() { },
   },
 };
 </script>
 
 <style lang="css" scoped>
-.input{
+.input {
   margin-bottom: 20px;
 }
 </style>
