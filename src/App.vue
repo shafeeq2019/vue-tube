@@ -85,10 +85,14 @@ export default {
   --text_light: hsl(255, 36%, 17%);
   --bkg_light: hsl(0%, 0%%, 100%);
   --model_bkg_light: #ffff;
+  --border_light: #dee2e6;
+  --card_light: #ffff;
 
-  --text_dark: hsl(217, 54.2%, 88%);
+  --text_dark: #CCCCCC;
   --bkg_dark: hsl(218, 15.4%, 10.2%);
   --model_bkg_dark: hsl(218, 15.4%, 10.2%);
+  --border_dark: #4b4a4a;
+  --card_dark: #343a40;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -98,6 +102,8 @@ export default {
     --modal_bkg: var(--model_bkg_dark);
     --dropdown_bkg: var(--dark);
     --tab_bkg: var(--bkg_dark);
+    --border_color: var(--border_dark);
+    --card_color: var(--card_dark);
   }
 }
 
@@ -107,6 +113,8 @@ export default {
   --modal_bkg: var(--model_bkg_dark);
   --dropdown_bkg: var(--dark);
   --tab_bkg: var(--bkg_dark);
+  --border_color: var(--border_dark);
+  --card_color: var(--card_dark);
 }
 
 @media (prefers-color-scheme: light) {
@@ -116,6 +124,8 @@ export default {
     --modal_bkg: var(--model_bkg_light);
     --dropdown_bkg: var(--light);
     --tab_bkg: var(--white);
+    --border_color: var(--border_light);
+    --card_color: var(--card_light);
   }
 }
 
@@ -125,6 +135,8 @@ export default {
   --modal_bkg: var(--model_bkg_light);
   --dropdown_bkg: var(--light);
   --tab_bkg: var(--white);
+  --border_color: var(--border_light);
+  --card_color: var(--card_light);
 }
 
 html {
@@ -153,7 +165,7 @@ body,
 }
 
 iframe {
-  border: 1px solid var(--text);
+  border: 1px solid var(--border_color);
   border-radius: 4px;
 }
 
@@ -197,4 +209,42 @@ iframe {
 .navbar-button {
   margin: 3px;
 }
+
+.nav-tabs {
+  border-bottom: 1px solid var(--border_color);
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link { 
+  border-color: var(--border_color);
+}
+
+.form-control {
+  border: 1px solid var(--border_color);
+}
+
+.custom-select {
+  border: 1px solid var(--border_color);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border_color);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border_color);
+}
+
+.nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
+    border-color: var(--border_color);
+}
+
+.nav-tabs .nav-tab-active.active {
+    border-bottom-color: transparent;
+}
+
+.card {
+  color: var(--text);
+  background-color: var(--card_color);
+}
+
 </style>

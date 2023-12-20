@@ -29,8 +29,6 @@
         <b-col cols="12">
           <div>
             <b-card
-              bg-variant="dark"
-              text-variant="white"
               title="No Categories to view"
             >
               <b-card-text>
