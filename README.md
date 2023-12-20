@@ -10,6 +10,10 @@ https://vuetube-1199b.firebaseapp.com/
 You only need to add your web app's Firebase configuration to ` ./src/firebase.js`
 
 
+## 📸 Screenshots
+<img src="screenshots/1.png">
+
+
 ## Build Setup
 ``` bash
 # install dependencies
