@@ -47,7 +47,7 @@ export default {
         try {
           const auth = getAuth();
           await signInWithEmailAndPassword(auth, this.email, this.password);
-          this.$router.push("/dashboard");
+          this.$router.push("/dashboard").catch(() => { });
         } catch (error) {
           let errorCode = error.code;
           if (errorCode == "auth/wrong-password") {

@@ -68,7 +68,7 @@ export default {
             userEMail: user.email,
             uid: user.uid,
           });
-          this.$router.push("/dashboard").catch(() => { });;
+          this.$router.push("/dashboard").catch(() => { });
         } catch (error) {
           const errorCode = error.code;
           if (errorCode == "auth/weak-password") {
