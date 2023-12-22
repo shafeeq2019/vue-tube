@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { getUserStatus } from "./firebase.js";
 import home from "./views/home.vue";
 import about from "./views/about.vue";
@@ -68,33 +69,38 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const user = await getUserStatus();
-  if (user) {
-    store.commit("updateLoginStatus", {
-      user: user,
-      isAuthonticated: true,
-    });
-  } else {
-    store.commit("updateLoginStatus", { isAuthonticated: false });
-  }
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!user) {
-      next({ path: "/login" });
-    } else {
-      next();
-    }
-  } else {
-    next();
-  }
-  if (to.matched.some((record) => record.meta.hideForAuth)) {
+  const auth = getAuth();
+  onAuthStateChanged(auth, function(user) {
     if (user) {
-      next({ path: "/dashboard" });
+      store.commit("updateLoginStatus", {
+        user: user,
+        isAuthonticated: true,
+      });
+    } else {
+      store.commit("updateLoginStatus", { isAuthonticated: false });
+    }
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+      if (!user) {
+        next({ path: "/login" });
+      } else {
+        next();
+      }
     } else {
       next();
     }
-  } else {
-    next();
-  }
+    if (to.matched.some((record) => record.meta.hideForAuth)) {
+      if (user) {
+        next({ path: "/dashboard" });
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+   });
+
+ 
+
 });
 
 export default router;

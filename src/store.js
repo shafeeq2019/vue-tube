@@ -1,8 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { db, getUserStatus } from "./firebase.js";
-import { getAuth, signOut } from "firebase/auth";
-
+import { db } from "./firebase.js";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import {
   collection,
   query,
@@ -87,21 +86,24 @@ const store = new Vuex.Store({
       });
     },
     fetchAllData: async ({ commit, state }) => {
-      commit('updateLoadingState', true);
-      const user = await getUserStatus();
-      if (user) {
-        commit("updateLoginStatus", {
-          isAuthonticated: true,
-          user: user,
-        });
-        await store.dispatch("fetchUserCategories");
-        await store.dispatch("fetchUserVideos");
-      } else {
-        commit("updateLoginStatus", {
-          isAuthonticated: false,
-        });
-      }
-      commit('updateLoadingState', false);
+      const auth = getAuth();
+      onAuthStateChanged(auth, async (user) => {
+        commit('updateLoadingState', true);
+        if (user) {
+          commit("updateLoginStatus", {
+            isAuthonticated: true,
+            user: user,
+          });
+          await store.dispatch("fetchUserCategories");
+          await store.dispatch("fetchUserVideos");
+          commit('updateLoadingState', false);
+        } else {
+          commit("updateLoginStatus", {
+            isAuthonticated: false,
+          });
+          commit('updateLoadingState', false);
+        }
+      });
     },
     fetchUserCategories: async ({ state, commit }) => {
       let userCategories = [];

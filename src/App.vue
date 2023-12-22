@@ -50,6 +50,7 @@ export default {
       "AddCategory",
       "clearField",
       "addVideoMutation",
+      "updateLoadingState"
     ]),
     ...mapActions(["fetchAllData"]),
     toggleModal(ModalName) {
@@ -57,6 +58,7 @@ export default {
     },
   },
   created() {
+    this.updateLoadingState(true);
     this.fetchAllData();
   },
 };
