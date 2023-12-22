@@ -1,37 +1,20 @@
 <template lang="html">
   <div>
-    <b-modal
-      id="removeCategoryModal"
-      centered
-      title="Remove Category"
-      @hidden="resetModal()"
-    >
+    <b-modal id="removeCategoryModal" centered title="Remove Category" @hidden="resetModal()">
       <div v-if="getCategoriesToSelect.length > 0">
-        <b-form-select
-          v-model="selectedCategory"
-          :options="getCategoriesToSelect"
-          size="md"
-          class="inputs"
-        >
+        <b-form-select v-model="selectedCategory" :options="getCategoriesToSelect" size="md" class="inputs">
           <template slot="first">
             <option :value="null" disabled>Please select a category</option>
           </template>
         </b-form-select>
       </div>
       <div v-else>
-        <b-alert show variant="warning"
-          >You dont have any category to remove !</b-alert
-        >
+        <b-alert show variant="warning">You dont have any category to remove !</b-alert>
       </div>
       <div slot="modal-footer">
         <div v-if="getCategoriesToSelect.length > 0">
-          <b-button
-            size="sm"
-            class="float-right"
-            variant="danger"
-            @click="removeCategory(selectedCategory)"
-            >Remove</b-button
-          >
+          <b-button size="sm" class="float-right" variant="danger"
+            @click="removeCategory(selectedCategory)">Remove</b-button>
         </div>
       </div>
     </b-modal>

@@ -2,31 +2,16 @@
   <div>
     <b-modal id="FilmModal" centered title="Add Video" @hidden="resetModal()">
       <div v-if="getCategoriesToSelect.length > 0">
-        <b-alert variant="success" :show="showSuccessAlert" dismissible
-          >Video was added successfully</b-alert
-        >
-        <b-alert variant="danger" :show="showErrorAlert" dismissible
-          >Please enter a name and the URL for the new Video and selecet a
+        <b-alert variant="success" :show="showSuccessAlert" dismissible>Video was added successfully</b-alert>
+        <b-alert variant="danger" :show="showErrorAlert" dismissible>Please enter a name and the URL for the new Video and
+          selecet a
           Category
         </b-alert>
-        <b-form-input
-          type="text"
-          placeholder="Enter a name for the video you want to add"
-          v-model="videoTitle"
-          class="inputs"
-        />
-        <b-form-input
-          type="url"
-          placeholder="Enter a URL for the video you want to add"
-          v-model="videoURL"
-          class="inputs"
-        />
-        <b-form-select
-          v-model="selectedCategory"
-          :options="getCategoriesToSelect"
-          size="md"
-          class="inputs"
-        >
+        <b-form-input type="text" placeholder="Enter a name for the video you want to add" v-model="videoTitle"
+          class="inputs" />
+        <b-form-input type="url" placeholder="Enter a URL for the video you want to add" v-model="videoURL"
+          class="inputs" />
+        <b-form-select v-model="selectedCategory" :options="getCategoriesToSelect" size="md" class="inputs">
           <template slot="first">
             <option :value="null" disabled>Please select a category</option>
           </template>
@@ -37,9 +22,7 @@
       </div>
       <div slot="modal-footer">
         <div v-if="getCategoriesToSelect.length > 0">
-          <b-button class="btn" size="sm" @click="addVideoFunction()"
-            >Add video</b-button
-          >
+          <b-button class="btn" size="sm" @click="addVideoFunction()">Add video</b-button>
         </div>
       </div>
     </b-modal>

@@ -1,22 +1,12 @@
 <template lang="html">
   <div>
     <b-modal id="CatModal" centered title="Add Category" @hidden="resetModal()">
-      <b-alert variant="success" :show="showSuccessAlert" dismissible
-        >Category was added successfully</b-alert
-      >
-      <b-alert variant="danger" :show="showErrorAlert" dismissible
-        >Please enter a name for the new category</b-alert
-      >
-      <b-form-input
-        class="inputs"
-        type="text"
-        placeholder="Enter a name for the category you want to add"
-        v-model="category"
-      />
+      <b-alert variant="success" :show="showSuccessAlert" dismissible>Category was added successfully</b-alert>
+      <b-alert variant="danger" :show="showErrorAlert" dismissible>Please enter a name for the new category</b-alert>
+      <b-form-input class="inputs" type="text" placeholder="Enter a name for the category you want to add"
+        v-model="category" />
       <div slot="modal-footer">
-        <b-button class="btn" size="sm" @click="addCategory(category)"
-          >Add Category</b-button
-        >
+        <b-button class="btn" size="sm" @click="addCategory(category)">Add Category</b-button>
       </div>
     </b-modal>
   </div>

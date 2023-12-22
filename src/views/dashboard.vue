@@ -1,23 +1,12 @@
 <template lang="html">
   <div style="margin:10px 0 0 10px;">
     <b-tabs content-class="mt-3" justified v-model="tabIndex">
-      <b-tab
-        :title-link-class="linkClass(index)"
-        v-for="(i, index) in categories"
-        :title="i.data.categoryName"
-        :key="index"
-      >
+      <b-tab :title-link-class="linkClass(index)" v-for="(i, index) in categories" :title="i.data.categoryName"
+        :key="index">
         <b-container>
           <b-row>
-            <b-col
-              cols="12"
-              sm="12"
-              md="6"
-              xl="6"
-              style="margin-bottom:50px"
-              v-for="(video, index) in getCategoryVideos(i.id)"
-              :key="index"
-            >
+            <b-col cols="12" sm="12" md="6" xl="6" style="margin-bottom:50px"
+              v-for="(video, index) in getCategoryVideos(i.id)" :key="index">
               <videoComponent :videoObj="video"></videoComponent>
             </b-col>
           </b-row>
@@ -28,15 +17,11 @@
       <b-row>
         <b-col cols="12">
           <div>
-            <b-card
-              title="No Categories to view"
-            >
+            <b-card title="No Categories to view">
               <b-card-text>
                 you dont have any category yet
               </b-card-text>
-              <b-button @click="toggleModal('CatModal')"
-                >click to add some</b-button
-              >
+              <b-button @click="toggleModal('CatModal')">click to add some</b-button>
             </b-card>
           </div>
         </b-col>
@@ -98,22 +83,22 @@ export default {
       return sortedVideos;
     },
   },
-  created() {},
+  created() { },
 };
 </script>
 
 <style lang="css">
 .nav-tab {
-	color: var(--text);
+  color: var(--text);
 }
 
 .nav-tabs .nav-tab-active.active {
-	color: var(--text);
-	background-color: var(--tab_bkg);
-   border-bottom-color: transparent;
+  color: var(--text);
+  background-color: var(--tab_bkg);
+  border-bottom-color: transparent;
 }
 
 .nav-tabs .nav-tab:hover {
-	color:  var(--text);
+  color: var(--text);
 }
 </style>

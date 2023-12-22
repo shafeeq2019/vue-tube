@@ -7,9 +7,7 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item to="/dashboard" v-if="isAuthonticated == true"
-            >Home</b-nav-item
-          >
+          <b-nav-item to="/dashboard" v-if="isAuthonticated == true">Home</b-nav-item>
           <b-nav-item to="/" v-else>Home</b-nav-item>
           <b-nav-item to="/about">About</b-nav-item>
         </b-navbar-nav>
@@ -19,18 +17,10 @@
           <b-nav-form>
             <slot name="buttons"></slot>
           </b-nav-form>
-          <b-nav-item-dropdown
-            right
-            v-if="isAuthonticated == true"
-            style="margin-left:5px"
-          >
+          <b-nav-item-dropdown right v-if="isAuthonticated == true" style="margin-left:5px">
             <!-- Using 'button-content' slot -->
-            <template slot="button-content"
-              ><em>{{ userEmail }}</em></template
-            >
-            <b-dropdown-item @click="changeColorTheme()"
-              >{{ theme == "dark" ? "Light" : "Dark" }} Mode</b-dropdown-item
-            >
+            <template slot="button-content"><em>{{ userEmail }}</em></template>
+            <b-dropdown-item @click="changeColorTheme()">{{ theme == "dark" ? "Light" : "Dark" }} Mode</b-dropdown-item>
             <b-dropdown-item @click="logout()" to="/">Sign Out</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>

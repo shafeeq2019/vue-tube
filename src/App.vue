@@ -1,33 +1,16 @@
 <template>
-  <div id="apps">
-    <appHeader v-if="isAuthonticated == false">
+  <div id="apps" v-if="loading === false">
+    <appHeader v-if="isAuthonticated === false">
       <template #buttons>
         <b-button size="sm" class="navbar-button" to="/login">login</b-button>
-        <b-button size="sm" class="navbar-button" to="/signUp"
-          >Sign Up</b-button
-        >
+        <b-button size="sm" class="navbar-button" to="/signUp">Sign Up</b-button>
       </template>
     </appHeader>
     <appHeader v-else-if="isAuthonticated == true">
       <template #buttons>
-        <b-button
-          @click="toggleModal('CatModal')"
-          class="navbar-button"
-          size="sm"
-          >Add Category</b-button
-        >
-        <b-button
-          @click="toggleModal('FilmModal')"
-          size="sm"
-          class="navbar-button"
-          >Add video</b-button
-        >
-        <b-button
-          size="sm"
-          class="navbar-button"
-          @click="toggleModal('removeCategoryModal')"
-          >Remove a category</b-button
-        >
+        <b-button @click="toggleModal('CatModal')" class="navbar-button" size="sm">Add Category</b-button>
+        <b-button @click="toggleModal('FilmModal')" size="sm" class="navbar-button">Add video</b-button>
+        <b-button size="sm" class="navbar-button" @click="toggleModal('removeCategoryModal')">Remove a category</b-button>
       </template>
     </appHeader>
     <addCategoryModal />
@@ -44,7 +27,7 @@ export default {
   components: {
     ...GlobalComponents,
   },
-  data: function() {
+  data: function () {
     return {
       category: "",
     };
@@ -57,6 +40,7 @@ export default {
       "showSuccessAlert",
       "showErrorAlert",
       "selectedCategory",
+      "loading"
     ]),
     ...mapGetters(["getCategoriesToSelect"]),
   },
@@ -214,7 +198,8 @@ iframe {
   border-bottom: 1px solid var(--border_color);
 }
 
-.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link { 
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
   border-color: var(--border_color);
 }
 
@@ -234,17 +219,17 @@ iframe {
   border-top: 1px solid var(--border_color);
 }
 
-.nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
-    border-color: var(--border_color);
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus {
+  border-color: var(--border_color);
 }
 
 .nav-tabs .nav-tab-active.active {
-    border-bottom-color: transparent;
+  border-bottom-color: transparent;
 }
 
 .card {
   color: var(--text);
   background-color: var(--card_color);
 }
-
 </style>

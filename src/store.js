@@ -1,7 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { db } from "./firebase.js";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { db, getUserStatus } from "./firebase.js";
+import { getAuth, signOut } from "firebase/auth";
+
 import {
   collection,
   query,
@@ -25,6 +26,7 @@ const store = new Vuex.Store({
     showErrorAlert: false,
     selectedCategory: null,
     correntCategory: "",
+    loading: false
   },
   getters: {
     getCategoriesToSelect: (state) => {
@@ -70,6 +72,9 @@ const store = new Vuex.Store({
       state.categories = [];
       state.videos = [];
     },
+    updateLoadingState: (state, payload) => {
+      state.loading = payload
+    },
   },
   actions: {
     logout: ({ commit }) => {
@@ -82,21 +87,21 @@ const store = new Vuex.Store({
       });
     },
     fetchAllData: async ({ commit, state }) => {
-      const auth = getAuth();
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          commit("updateLoginStatus", {
-            isAuthonticated: true,
-            user: user,
-          });
-          await store.dispatch("fetchUserCategories");
-          await store.dispatch("fetchUserVideos");
-        } else {
-          commit("updateLoginStatus", {
-            isAuthonticated: false,
-          });
-        }
-      });
+      commit('updateLoadingState', true);
+      const user = await getUserStatus();
+      if (user) {
+        commit("updateLoginStatus", {
+          isAuthonticated: true,
+          user: user,
+        });
+        await store.dispatch("fetchUserCategories");
+        await store.dispatch("fetchUserVideos");
+      } else {
+        commit("updateLoginStatus", {
+          isAuthonticated: false,
+        });
+      }
+      commit('updateLoadingState', false);
     },
     fetchUserCategories: async ({ state, commit }) => {
       let userCategories = [];
