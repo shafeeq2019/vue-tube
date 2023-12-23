@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { getUserStatus } from "./firebase.js";
 import home from "./views/home.vue";
 import about from "./views/about.vue";
 import signUp from "./views/signUp.vue";
