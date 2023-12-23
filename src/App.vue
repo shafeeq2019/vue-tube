@@ -1,5 +1,20 @@
 <template>
   <div id="apps" v-if="loading === false">
+    <div v-if="deferredPrompt" class="install-prompt">
+      <div class="alert alert-info rounded-0" role="alert">
+        <b-container fluid>
+          <b-row>
+            <b-col class="d-flex align-items-center" sm="12" md="6" xl="6">
+              Install this site as an app for a better experience!
+            </b-col>
+            <b-col sm="12" md="6" xl="6" class="d-flex justify-content-end">
+              <b-button size="sm" @click="install()" style="margin-right:6px">Install</b-button>
+              <b-button size="sm" @click="dismiss()">Dismiss</b-button>
+            </b-col>
+          </b-row>
+        </b-container>
+      </div>
+    </div>
     <appHeader v-if="isAuthonticated === false">
       <template #buttons>
         <b-button size="sm" class="navbar-button" to="/login">login</b-button>
@@ -22,7 +37,7 @@
 <script>
 import GlobalComponents from "./GlobalComponents.js";
 import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
-
+import Cookies from "js-cookie";
 export default {
   components: {
     ...GlobalComponents,
@@ -30,6 +45,7 @@ export default {
   data: function () {
     return {
       category: "",
+      deferredPrompt: null
     };
   },
   computed: {
@@ -56,8 +72,24 @@ export default {
     toggleModal(ModalName) {
       this.$root.$emit("bv::toggle::modal", ModalName, "#btnToggle");
     },
+    async dismiss() {
+      Cookies.set("add-to-home-screen", null, { expires: 5 });
+      this.deferredPrompt = null;
+    },
+    async install() {
+      this.deferredPrompt.prompt();
+    }
   },
   created() {
+    window.addEventListener("beforeinstallprompt", e => {
+      e.preventDefault();
+      if (Cookies.get("add-to-home-screen") === undefined) {
+        this.deferredPrompt = e;
+      }
+    });
+    window.addEventListener("appinstalled", () => {
+      this.deferredPrompt = null;
+    });
     this.updateLoadingState(true);
     this.fetchAllData();
   },
@@ -233,5 +265,16 @@ iframe {
 .card {
   color: var(--text);
   background-color: var(--card_color);
+}
+
+
+.install-prompt .alert {
+  margin-bottom: 0
+}
+
+.install-prompt .alert-info {
+  color: #ffff;
+  background-color: #0089F3;
+  border-color: #0089F3;
 }
 </style>

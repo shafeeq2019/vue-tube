@@ -15,11 +15,13 @@ import store from "./store.js";
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
 import router from "./router.js";
+import './registerServiceWorker'
+
 
 new Vue({
   router,
   store,
-  render: (h) => h(App),
+  render: (h) => h(App)
 }).$mount("#app");
 
 //window.addEventListener('contextmenu',function(e){

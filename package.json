@@ -14,6 +14,8 @@
     "firebase": "^9.6.8",
     "firebaseui": "^3.6.1",
     "get-video-id": "^3.5.3",
+    "js-cookie": "^3.0.5",
+    "register-service-worker": "^1.7.2",
     "ss-loader": "^1.0.1",
     "vue": "^2.6.14",
     "vue-awesome": "^3.5.3",
@@ -24,11 +26,14 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-pwa": "~5.0.0",
     "@vue/cli-service": "^5.0.8",
     "@vue/eslint-config-prettier": "^4.0.1",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
+    "sass": "~1.32.0",
+    "sass-loader": "^10.0.0",
     "vue-template-compiler": "^2.6.14",
     "vuexfire": "^3.0.0-alpha.18"
   }

@@ -15,5 +15,5 @@ export default {
   login,
   addCategoryModal,
   addVideoModal,
-  removeCategoryModal,
+  removeCategoryModal
 };
