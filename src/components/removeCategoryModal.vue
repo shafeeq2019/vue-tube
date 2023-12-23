@@ -14,7 +14,7 @@
       <div slot="modal-footer">
         <div v-if="getCategoriesToSelect.length > 0">
           <b-button size="sm" class="float-right" variant="danger"
-            @click="removeCategory(selectedCategory)">Remove</b-button>
+            @click="removeCategory(selectedCategory);toggleModal('removeCategoryModal')">Remove</b-button>
         </div>
       </div>
     </b-modal>
