@@ -70,7 +70,7 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   const auth = getAuth();
-  onAuthStateChanged(auth, function(user) {
+  onAuthStateChanged(auth, function (user) {
     if (user) {
       store.commit("updateLoginStatus", {
         user: user,
@@ -97,10 +97,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
       next();
     }
-   });
-
- 
-
+  });
 });
 
 export default router;

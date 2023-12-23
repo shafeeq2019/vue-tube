@@ -65,6 +65,7 @@ export default {
     ...mapActions(["fetchAllData"]),
     linkClass(idx) {
       if (this.tabIndex === idx) {
+        localStorage.setItem('tab-index', this.tabIndex);
         return ["nav-tab-active"];
       } else {
         return ["nav-tab"];
@@ -83,7 +84,10 @@ export default {
       return sortedVideos;
     },
   },
-  created() { },
+  created() { 
+    const localStorageTabIndex = localStorage.getItem('tab-index');
+    this.tabIndex = parseInt(localStorageTabIndex)
+  },
 };
 </script>
 
