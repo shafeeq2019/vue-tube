@@ -157,10 +157,7 @@ export default {
   --card_color: var(--card_light);
 }
 
-html {
-  height: 100%;
-}
-
+html,
 body {
   height: 100%;
 }

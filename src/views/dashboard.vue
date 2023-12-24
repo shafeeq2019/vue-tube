@@ -1,5 +1,5 @@
 <template lang="html">
-  <div style="margin:10px 0 0 10px;">
+  <div style="margin:10px 0 0 10px;" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd">
     <b-tabs content-class="mt-3" justified v-model="tabIndex">
       <b-tab :title-link-class="linkClass(index)" v-for="(i, index) in categories" :title="i.data.categoryName"
         :key="index">
@@ -44,6 +44,8 @@ export default {
     return {
       tabIndex: 0,
       category: "",
+      touchStartX: 0,
+      touchEndX: 0,
     };
   },
   computed: {
@@ -65,7 +67,7 @@ export default {
     ...mapActions(["fetchAllData"]),
     linkClass(idx) {
       if (this.tabIndex === idx) {
-        localStorage.setItem('tab-index', this.tabIndex);
+        localStorage.setItem("tab-index", this.tabIndex);
         return ["nav-tab-active"];
       } else {
         return ["nav-tab"];
@@ -83,13 +85,34 @@ export default {
       }
       return sortedVideos;
     },
+    touchStart(event) {
+      this.touchStartX = event.touches[0].clientX;
+    },
+    touchMove(event) {
+      this.touchEndX = event.touches[0].clientX;
+    },
+    touchEnd() {
+      const deltaX = this.touchEndX - this.touchStartX;
+      if (deltaX > 50) {
+        // Swipe right, go to the previous tab
+        if (this.tabIndex > 0) {
+          this.tabIndex--;
+        }
+      } else if (deltaX < -50) {
+        // Swipe left, go to the next tab
+        if (this.tabIndex < this.categories.length - 1) {
+          this.tabIndex++;
+        }
+      }
+    }
   },
-  created() { 
-    const localStorageTabIndex = localStorage.getItem('tab-index');
-    this.tabIndex = parseInt(localStorageTabIndex)
+  created() {
+    const localStorageTabIndex = localStorage.getItem("tab-index");
+    this.tabIndex = parseInt(localStorageTabIndex);
   },
 };
 </script>
+
 
 <style lang="css">
 .nav-tab {
@@ -104,5 +127,19 @@ export default {
 
 .nav-tabs .nav-tab:hover {
   color: var(--text);
+}
+
+.w-tab2 {
+  border: solid 2px black;
+  background-color: red;
+}
+
+.w-highlight-container {
+  border: solid 2px black;
+  background-color: #ffd;
+}
+
+.tab-content {
+  height: calc(100vh - (124px)) !important;
 }
 </style>
