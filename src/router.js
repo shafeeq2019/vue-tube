@@ -1,101 +1,59 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import home from "./views/home.vue";
-import about from "./views/about.vue";
-import signUp from "./views/signUp.vue";
-import login from "./views/login.vue";
-import pageNotFound from "./views/pageNotFound.vue";
-import dashboard from "./views/dashboard.vue";
-import store from "./store.js";
+import { createRouter, createWebHistory } from "vue-router";
+import { auth } from "./firebase.js";
+import { useAppStore } from "./stores/app.js";
+import HomeView from "./views/HomeView.vue";
 
-Vue.use(VueRouter);
-
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
       name: "home",
-      component: home,
-      meta: {
-        hideForAuth: true,
-      }
+      component: HomeView,
+      meta: { hideForAuth: true },
     },
     {
       path: "/about",
       name: "about",
-      component: about
+      component: () => import("./views/AboutView.vue"),
     },
     {
       path: "/signUp",
       name: "signUp",
-      component: signUp,
-      meta: {
-        hideForAuth: true,
-      },
+      component: () => import("./views/SignUpView.vue"),
+      meta: { hideForAuth: true },
     },
     {
       path: "/dashboard",
       name: "dashboard",
-      component: dashboard,
-      meta: {
-        requiresAuth: true,
-      },
+      component: () => import("./views/DashboardView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/login",
       name: "login",
-      component: login,
-      meta: {
-        hideForAuth: true,
-      },
+      component: () => import("./views/LoginView.vue"),
+      meta: { hideForAuth: true },
     },
     {
-      path: "*",
+      path: "/:pathMatch(.*)*",
       name: "pageNotFound",
-      component: pageNotFound
+      component: () => import("./views/PageNotFoundView.vue"),
     },
-    // {
-    //   path: "/test",
-    //   name: "test",
-    //   component: test,
-    //   meta: {},
-    // },
   ],
 });
 
-router.beforeEach(async (to, from, next) => {
-  const auth = getAuth();
-  onAuthStateChanged(auth, function (user) {
-    if (user) {
-      store.commit("updateLoginStatus", {
-        user: user,
-        isAuthonticated: true,
-      });
-    } else {
-      store.commit("updateLoginStatus", { isAuthonticated: false });
-    }
-    if (to.matched.some((record) => record.meta.requiresAuth)) {
-      if (!user) {
-        next({ path: "/login" });
-      } else {
-        next();
-      }
-    } else {
-      next();
-    }
-    if (to.matched.some((record) => record.meta.hideForAuth)) {
-      if (user) {
-        next({ path: "/dashboard" });
-      } else {
-        next();
-      }
-    } else {
-      next();
-    }
-  });
+router.beforeEach(async (to) => {
+  await useAppStore().initAuth();
+  // Firebase's currentUser is updated before signIn/signOut resolve,
+  // so it is always up to date when navigating right after them.
+  const loggedIn = !!auth.currentUser;
+  if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
+    return { name: "login" };
+  }
+  if (to.matched.some((record) => record.meta.hideForAuth) && loggedIn) {
+    return { name: "dashboard" };
+  }
 });
 
 export default router;

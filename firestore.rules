@@ -1,0 +1,42 @@
+rules_version = '2';
+
+// Every document belongs to the user whose uid is stored in it.
+// Users can only read and write their own data.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    match /categories/{categoryId} {
+      allow read, delete: if signedIn() && resource.data.userID == request.auth.uid;
+      allow create: if signedIn()
+        && request.resource.data.userID == request.auth.uid
+        && request.resource.data.categoryName is string
+        && request.resource.data.categoryName.size() > 0
+        && request.resource.data.categoryName.size() <= 100;
+      allow update: if signedIn()
+        && resource.data.userID == request.auth.uid
+        && request.resource.data.userID == request.auth.uid;
+    }
+
+    match /videos/{videoId} {
+      allow read, delete: if signedIn() && resource.data.userID == request.auth.uid;
+      allow create: if signedIn()
+        && request.resource.data.userID == request.auth.uid
+        && request.resource.data.video.url is string
+        && request.resource.data.video.url.matches('https://www[.]youtube[.]com/embed/[A-Za-z0-9_-]+');
+      allow update: if signedIn()
+        && resource.data.userID == request.auth.uid
+        && request.resource.data.userID == request.auth.uid;
+    }
+
+    match /users/{userId} {
+      allow read, delete: if signedIn() && resource.data.uid == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if signedIn()
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == request.auth.uid;
+    }
+  }
+}
