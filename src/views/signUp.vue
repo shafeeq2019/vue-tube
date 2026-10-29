@@ -34,9 +34,8 @@
 
 <script>
 import { db } from "../firebase.js";
-import { mapState, mapActions } from "vuex";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, setDoc, doc } from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore";
 
 export default {
   data() {
@@ -47,11 +46,7 @@ export default {
       errorMessage: "",
     };
   },
-  computed: {
-    ...mapState(["userID", "response", "isAuthonticated"]),
-  },
   methods: {
-    ...mapActions(["fetchAllData"]),
     async signUp(event) {
       event.preventDefault();
       if (this.name != "" && this.email != "" && this.password != "") {
@@ -63,7 +58,7 @@ export default {
             this.password
           );
           const user = signUp.user;
-          await setDoc(doc(collection(db, "users")), {
+          await setDoc(doc(db, "users", user.uid), {
             userName: this.name,
             userEMail: user.email,
             uid: user.uid,
@@ -72,7 +67,7 @@ export default {
         } catch (error) {
           const errorCode = error.code;
           if (errorCode == "auth/weak-password") {
-            this.errorMessage = "Your password should be at least 6 characters !";
+            this.errorMessage = "Your password should be at least 6 characters!";
           }
           else if (errorCode == "auth/email-already-in-use") {
             this.errorMessage = "This email address is already in use. Please enter a different email address";
@@ -81,16 +76,14 @@ export default {
             this.errorMessage = "Invalid email address!";
           }
           else {
-            console.log(error.code);
             this.errorMessage = error.message;
           }
         }
       } else {
-        this.errorMessage = "All fields are required !";
+        this.errorMessage = "All fields are required!";
       }
     },
   },
-  created() { },
 };
 </script>
 

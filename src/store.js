@@ -10,41 +10,50 @@ import {
   setDoc,
   doc,
   deleteDoc,
+  writeBatch,
 } from "firebase/firestore";
 Vue.use(Vuex);
+
+// Resolves once Firebase has reported the initial auth state.
+let authReady = null;
 
 const store = new Vuex.Store({
   state: {
     userID: "",
-    userName: "",
     userEmail: "",
-    isAuthonticated: false,
+    isAuthenticated: false,
     categories: [],
     videos: [],
     showSuccessAlert: false,
     showErrorAlert: false,
     selectedCategory: null,
-    correntCategory: "",
-    loading: false
+    loading: true,
   },
   getters: {
     getCategoriesToSelect: (state) => {
-      var options = state.categories.map((option) => {
+      return state.categories.map((option) => {
         return {
           value: option.id,
           text: option.data.categoryName,
         };
       });
-      return options;
     },
     isLoggedIn: (state) => {
-      return state.isAuthonticated;
+      return state.isAuthenticated;
+    },
+    videosByCategory: (state) => {
+      const grouped = {};
+      for (const video of state.videos) {
+        const categoryID = video.data.categoryID;
+        (grouped[categoryID] = grouped[categoryID] || []).push(video);
+      }
+      return grouped;
     },
   },
   mutations: {
     updateLoginStatus: (state, payload) => {
       state.userID = payload.user ? payload.user.uid : "";
-      state.isAuthonticated = payload.isAuthonticated;
+      state.isAuthenticated = payload.isAuthenticated;
       state.userEmail = payload.user ? payload.user.email : "";
     },
     updateUserCategories: (state, payload) => {
@@ -70,115 +79,118 @@ const store = new Vuex.Store({
     clearUserDataStates: (state) => {
       state.categories = [];
       state.videos = [];
+      state.selectedCategory = null;
     },
     updateLoadingState: (state, payload) => {
-      state.loading = payload
+      state.loading = payload;
     },
   },
   actions: {
-    logout: ({ commit }) => {
-      const auth = getAuth();
-      signOut(auth).then(() => {
-        commit("updateLoginStatus", {
-          isAuthonticated: false,
-        });
-        commit("clearUserDataStates");
-      });
+    logout: async ({ commit }) => {
+      try {
+        await signOut(getAuth());
+      } catch (error) {
+        console.error(error);
+      }
+      commit("updateLoginStatus", { isAuthenticated: false });
+      commit("clearUserDataStates");
     },
-    fetchAllData: async ({ commit, state }) => {
-      const auth = getAuth();
-      onAuthStateChanged(auth, async (user) => {
-        commit('updateLoadingState', true);
-        if (user) {
-          commit("updateLoginStatus", {
-            isAuthonticated: true,
-            user: user,
-          });
-          await store.dispatch("fetchUserCategories");
-          await store.dispatch("fetchUserVideos");
-          commit('updateLoadingState', false);
-        } else {
-          commit("updateLoginStatus", {
-            isAuthonticated: false,
-          });
-          commit('updateLoadingState', false);
-        }
+    // Registers the auth listener exactly once and returns a promise that
+    // resolves after the first auth state (and the user's data) is loaded.
+    initAuth: ({ commit, dispatch }) => {
+      if (authReady) {
+        return authReady;
+      }
+      authReady = new Promise((resolve) => {
+        onAuthStateChanged(getAuth(), async (user) => {
+          commit("updateLoadingState", true);
+          if (user) {
+            commit("updateLoginStatus", {
+              isAuthenticated: true,
+              user: user,
+            });
+            try {
+              await Promise.all([
+                dispatch("fetchUserCategories"),
+                dispatch("fetchUserVideos"),
+              ]);
+            } catch (error) {
+              console.error(error);
+            }
+          } else {
+            commit("updateLoginStatus", { isAuthenticated: false });
+            commit("clearUserDataStates");
+          }
+          commit("updateLoadingState", false);
+          resolve();
+        });
       });
+      return authReady;
     },
     fetchUserCategories: async ({ state, commit }) => {
-      let userCategories = [];
       const q = query(
         collection(db, "categories"),
         where("userID", "==", state.userID)
       );
       const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        userCategories.push({
-          data: doc.data(),
-          id: doc.id,
-        });
-      });
-      commit("updateUserCategories", {
-        userCategories: userCategories,
-      });
+      const userCategories = querySnapshot.docs.map((d) => ({
+        data: d.data(),
+        id: d.id,
+      }));
+      commit("updateUserCategories", { userCategories });
     },
     fetchUserVideos: async ({ commit, state }) => {
-      let videos = [];
       const q = query(
         collection(db, "videos"),
         where("userID", "==", state.userID)
       );
       const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        videos.push({
-          data: doc.data(),
-          id: doc.id,
-        });
-      });
-      commit("updateUserVideos", {
-        userVideos: videos,
-      });
+      const userVideos = querySnapshot.docs.map((d) => ({
+        data: d.data(),
+        id: d.id,
+      }));
+      commit("updateUserVideos", { userVideos });
     },
-    addCategory: async ({ commit, state }, categoryName) => {
+    addCategory: async ({ commit, state, dispatch }, categoryName) => {
       try {
-        if (!categoryName || !categoryName.replace(/\s/g, "").length) {
-          return;
-        }
         await setDoc(doc(collection(db, "categories")), {
           userID: state.userID,
           categoryName: categoryName,
           videos: [],
         });
         commit("successAlertMutation");
-        await store.dispatch("fetchUserCategories");
+        await dispatch("fetchUserCategories");
       } catch (error) {
-        console.log(error);
-        commit("errorAlertMutation", {
-          error: error.message,
-        });
+        commit("errorAlertMutation", { error: error.message });
       }
     },
-    removeCategory: async ({ state }) => {
-      if (!state.selectedCategory) {
+    removeCategory: async ({ state, commit, dispatch }) => {
+      const categoryID = state.selectedCategory;
+      if (!categoryID) {
         return;
       }
       try {
-        await deleteDoc(doc(db, "categories", state.selectedCategory));
+        // The userID filter is required so the query passes the security rules.
         const q = query(
           collection(db, "videos"),
-          where("categoryID", "==", state.selectedCategory)
+          where("userID", "==", state.userID),
+          where("categoryID", "==", categoryID)
         );
         const querySnapshot = await getDocs(q);
-        querySnapshot.forEach(async (v) => {
-          let video = doc(db, "videos", v.id);
-          await deleteDoc(video);
-        });
-        await store.dispatch("fetchUserCategories");
+        const batch = writeBatch(db);
+        querySnapshot.forEach((v) => batch.delete(v.ref));
+        batch.delete(doc(db, "categories", categoryID));
+        await batch.commit();
+        commit("changeSelectedCategory", null);
+        await Promise.all([
+          dispatch("fetchUserCategories"),
+          dispatch("fetchUserVideos"),
+        ]);
       } catch (error) {
-        console.log(error);
+        commit("errorAlertMutation", { error: error.message });
       }
     },
-    addVideo: async ({ state, commit }, payload) => {
+    addVideo: async ({ state, commit, dispatch }, payload) => {
       try {
         await setDoc(doc(collection(db, "videos")), {
           userID: state.userID,
@@ -186,20 +198,17 @@ const store = new Vuex.Store({
           video: payload,
         });
         commit("successAlertMutation");
-        await store.dispatch("fetchUserVideos");
+        await dispatch("fetchUserVideos");
       } catch (error) {
-        console.log(error);
-        commit("errorAlertMutation", {
-          error: error.message,
-        });
+        commit("errorAlertMutation", { error: error.message });
       }
     },
-    removeVideo: async ({ state, commit }, payload) => {
+    removeVideo: async ({ commit, dispatch }, videoID) => {
       try {
-        await deleteDoc(doc(db, "videos", payload));
-        await store.dispatch("fetchUserVideos");
+        await deleteDoc(doc(db, "videos", videoID));
+        await dispatch("fetchUserVideos");
       } catch (error) {
-        console.log(error);
+        commit("errorAlertMutation", { error: error.message });
       }
     },
   },

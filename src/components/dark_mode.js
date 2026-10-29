@@ -1,4 +1,4 @@
-function getCurrentThem() {
+function getCurrentTheme() {
   let theme = window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light";
@@ -14,7 +14,7 @@ function loadTheme(theme) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  loadTheme(getCurrentThem());
+  loadTheme(getCurrentTheme());
 });
 
-export { getCurrentThem, loadTheme };
+export { getCurrentTheme, loadTheme };

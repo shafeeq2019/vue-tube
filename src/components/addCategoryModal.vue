@@ -2,45 +2,53 @@
   <div>
     <b-modal id="CatModal" centered title="Add Category" @hidden="resetModal()">
       <b-alert variant="success" :show="showSuccessAlert" dismissible>Category was added successfully</b-alert>
-      <b-alert variant="danger" :show="showErrorAlert" dismissible>Please enter a name for the new category</b-alert>
-      <b-form-input class="inputs" type="text" placeholder="Enter a name for the category you want to add"
-        v-model="category" />
+      <b-alert variant="danger" :show="!!errorMessage" dismissible @dismissed="errorMessage = ''">{{ errorMessage }}</b-alert>
+      <b-form @submit.prevent="submit()">
+        <b-form-input class="inputs" type="text" placeholder="Enter a name for the category you want to add"
+          v-model="category" />
+      </b-form>
       <div slot="modal-footer">
-        <b-button class="btn" size="sm" @click="addCategory(category)">Add Category</b-button>
+        <b-button class="btn" size="sm" @click="submit()">Add Category</b-button>
       </div>
     </b-modal>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   data() {
     return {
       category: "",
+      errorMessage: "",
     };
   },
   methods: {
-    ...mapMutations(["fetchData", "logout", "clearAlerts", "addVideoMutation"]),
+    ...mapMutations(["clearAlerts"]),
     ...mapActions(["addCategory"]),
-    toggleModal(ModalName) {
-      this.$root.$emit("bv::toggle::modal", ModalName, "#btnToggle");
+    async submit() {
+      this.clearAlerts();
+      const name = (this.category || "").trim();
+      if (!name) {
+        this.errorMessage = "Please enter a name for the new category";
+        return;
+      }
+      this.errorMessage = "";
+      await this.addCategory(name);
+      if (this.showErrorAlert) {
+        this.errorMessage = "The category could not be saved. Please try again.";
+      } else {
+        this.category = "";
+      }
     },
     resetModal() {
-      this.category = null;
+      this.category = "";
+      this.errorMessage = "";
       this.clearAlerts();
     },
   },
   computed: {
-    ...mapState([
-      "userID",
-      "response",
-      "isAuthonticated",
-      "showSuccessAlert",
-      "showErrorAlert",
-      "selectedCategory",
-    ]),
-    ...mapGetters(["getCategoriesToSelect"]),
+    ...mapState(["showSuccessAlert", "showErrorAlert"]),
   },
 };
 </script>

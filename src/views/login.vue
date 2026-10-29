@@ -33,13 +33,11 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 export default {
   data() {
     return {
-      isAuthonticated: false,
       email: "",
       password: "",
       errorMessage: "",
     };
   },
-  computed: {},
   methods: {
     async signIn(event) {
       event.preventDefault();
@@ -50,21 +48,24 @@ export default {
           this.$router.push("/dashboard").catch(() => { });
         } catch (error) {
           let errorCode = error.code;
-          if (errorCode == "auth/wrong-password") {
-            this.errorMessage = "Wrong password !";
-          } else if (errorCode == "auth/user-not-found") {
-            this.errorMessage = "User not found !";
+          if (
+            errorCode == "auth/wrong-password" ||
+            errorCode == "auth/user-not-found" ||
+            errorCode == "auth/invalid-credential"
+          ) {
+            this.errorMessage = "Wrong email or password!";
           } else if (errorCode == "auth/invalid-email") {
-            this.errorMessage = "Invalid email !";
+            this.errorMessage = "Invalid email!";
+          } else if (errorCode == "auth/too-many-requests") {
+            this.errorMessage = "Too many attempts. Please try again later.";
           } else {
             this.errorMessage = error.message;
           }
         }
       } else {
-        this.errorMessage = "All fields are required !";
+        this.errorMessage = "All fields are required!";
       }
     },
-    created() { },
   },
 };
 </script>

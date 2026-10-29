@@ -9,12 +9,12 @@
             videos.
           </div>
           <div>
-            You can add them into categories to sperate documentries form music
-            videos
+            You can sort them into categories to separate documentaries from music
+            videos.
           </div>
           <hr />
           <p style="font-size:30px;">Free account</p>
-          <p>Createing an account on VueTube is free and will be</p>
+          <p>Creating an account on VueTube is free and will always be.</p>
           <router-link to="/signUp"><b-button>Get started!</b-button></router-link>
         </div>
       </b-col>
@@ -23,12 +23,7 @@
 </template>
 
 <script>
-import appHeader from "../components/header.vue";
-export default {
-  components: {
-    appHeader,
-  },
-};
+export default {};
 </script>
 
 <style lang="css" scoped></style>

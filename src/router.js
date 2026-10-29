@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import home from "./views/home.vue";
 import about from "./views/about.vue";
 import signUp from "./views/signUp.vue";
@@ -57,45 +57,19 @@ const router = new VueRouter({
       name: "pageNotFound",
       component: pageNotFound
     },
-    // {
-    //   path: "/test",
-    //   name: "test",
-    //   component: test,
-    //   meta: {},
-    // },
   ],
 });
 
 router.beforeEach(async (to, from, next) => {
-  const auth = getAuth();
-  onAuthStateChanged(auth, function (user) {
-    if (user) {
-      store.commit("updateLoginStatus", {
-        user: user,
-        isAuthonticated: true,
-      });
-    } else {
-      store.commit("updateLoginStatus", { isAuthonticated: false });
-    }
-    if (to.matched.some((record) => record.meta.requiresAuth)) {
-      if (!user) {
-        next({ path: "/login" });
-      } else {
-        next();
-      }
-    } else {
-      next();
-    }
-    if (to.matched.some((record) => record.meta.hideForAuth)) {
-      if (user) {
-        next({ path: "/dashboard" });
-      } else {
-        next();
-      }
-    } else {
-      next();
-    }
-  });
+  await store.dispatch("initAuth");
+  const loggedIn = !!getAuth().currentUser;
+  if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
+    return next({ path: "/login" });
+  }
+  if (to.matched.some((record) => record.meta.hideForAuth) && loggedIn) {
+    return next({ path: "/dashboard" });
+  }
+  next();
 });
 
 export default router;

@@ -11,7 +11,7 @@
               <h3 class="h2">
                 Look like you're lost
               </h3>
-              <p>the page you are looking for not avaible!</p>
+              <p>The page you are looking for is not available!</p>
               <router-link class="link_404" to="/">Go to Home</router-link>
             </div>
           </div>
@@ -33,7 +33,8 @@ export default {
 =======================*/
 .page_404 {
   padding: 50px 0;
-  background: #fff;
+  color: var(--text);
+  background: var(--bkg);
   font-family: "Arvo", serif;
 }
 

@@ -2,7 +2,7 @@
   <b-container class="content text-center">
     <b-row>
       <b-col>
-        <h2 style="heading">About VueTube</h2>
+        <h2 class="heading">About VueTube</h2>
         <p>
           At VueTube you can sign up for free and start adding your favourite
           YouTube videos right away.
@@ -13,12 +13,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-export default {
-  computed: {
-    ...mapState(["users"]),
-  },
-};
+export default {};
 </script>
 
 <style lang="css" scoped></style>

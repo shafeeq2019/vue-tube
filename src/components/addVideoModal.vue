@@ -3,13 +3,10 @@
     <b-modal id="FilmModal" centered title="Add Video" @hidden="resetModal()">
       <div v-if="getCategoriesToSelect.length > 0">
         <b-alert variant="success" :show="showSuccessAlert" dismissible>Video was added successfully</b-alert>
-        <b-alert variant="danger" :show="showErrorAlert" dismissible>Please enter a name and the URL for the new Video and
-          selecet a
-          Category
-        </b-alert>
+        <b-alert variant="danger" :show="!!errorMessage" dismissible @dismissed="errorMessage = ''">{{ errorMessage }}</b-alert>
         <b-form-input type="text" placeholder="Enter a name for the video you want to add" v-model="videoTitle"
           class="inputs" />
-        <b-form-input type="url" placeholder="Enter a URL for the video you want to add" v-model="videoURL"
+        <b-form-input type="url" placeholder="Enter a YouTube URL for the video you want to add" v-model="videoURL"
           class="inputs" />
         <b-form-select v-model="selectedCategory" :options="getCategoriesToSelect" size="md" class="inputs">
           <template slot="first">
@@ -18,7 +15,7 @@
         </b-form-select>
       </div>
       <div v-else>
-        <b-alert show variant="warning">You dont have any category !</b-alert>
+        <b-alert show variant="warning">You don't have any categories yet!</b-alert>
       </div>
       <div slot="modal-footer">
         <div v-if="getCategoriesToSelect.length > 0">
@@ -36,46 +33,49 @@ import getVideoId from "get-video-id";
 export default {
   data() {
     return {
-      category: "",
       videoTitle: "",
       videoURL: "",
+      errorMessage: "",
     };
   },
   methods: {
-    ...mapMutations(["fetchData", "logout", "AddCategory", "clearAlerts"]),
+    ...mapMutations(["clearAlerts"]),
     ...mapActions(["addVideo"]),
-    toggleModal(ModalName) {
-      this.$root.$emit("bv::toggle::modal", ModalName, "#btnToggle");
-    },
-    addVideoFunction() {
-      let video;
-      if (this.selectedCategory && this.videoURL && this.videoTitle) {
-        const { id } = getVideoId(this.videoURL);
-        const embedLink = "https://www.youtube.com/embed/" + id;
-        video = {
-          title: this.videoTitle,
-          url: embedLink,
-        };
-        this.addVideo(video);
+    async addVideoFunction() {
+      this.clearAlerts();
+      const title = this.videoTitle.trim();
+      if (!title || !this.videoURL || !this.selectedCategory) {
+        this.errorMessage =
+          "Please enter a name and the URL for the new video and select a category";
+        return;
+      }
+      const { id, service } = getVideoId(this.videoURL.trim());
+      if (!id || service !== "youtube") {
+        this.errorMessage = "Please enter a valid YouTube video URL";
+        return;
+      }
+      this.errorMessage = "";
+      await this.addVideo({
+        title: title,
+        url: "https://www.youtube.com/embed/" + id,
+      });
+      if (this.showErrorAlert) {
+        this.errorMessage = "The video could not be saved. Please try again.";
+      } else {
+        this.videoTitle = "";
+        this.videoURL = "";
       }
     },
     resetModal() {
-      this.category = "";
       this.videoTitle = "";
       this.videoURL = "";
+      this.errorMessage = "";
       this.selectedCategory = null;
       this.clearAlerts();
     },
   },
   computed: {
-    ...mapState([
-      "userID",
-      "response",
-      "isAuthonticated",
-      "showSuccessAlert",
-      "showErrorAlert",
-      "selectedCategory",
-    ]),
+    ...mapState(["showSuccessAlert", "showErrorAlert"]),
     ...mapGetters(["getCategoriesToSelect"]),
     selectedCategory: {
       get() {

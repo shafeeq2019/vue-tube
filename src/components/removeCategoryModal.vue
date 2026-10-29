@@ -7,14 +7,15 @@
             <option :value="null" disabled>Please select a category</option>
           </template>
         </b-form-select>
+        <small v-if="selectedCategory">All videos in this category will be deleted as well.</small>
       </div>
       <div v-else>
-        <b-alert show variant="warning">You dont have any category to remove !</b-alert>
+        <b-alert show variant="warning">You don't have any categories to remove!</b-alert>
       </div>
       <div slot="modal-footer">
         <div v-if="getCategoriesToSelect.length > 0">
-          <b-button size="sm" class="float-right" variant="danger"
-            @click="removeCategory(selectedCategory);toggleModal('removeCategoryModal')">Remove</b-button>
+          <b-button size="sm" class="float-right" variant="danger" :disabled="!selectedCategory || removing"
+            @click="remove()">Remove</b-button>
         </div>
       </div>
     </b-modal>
@@ -22,17 +23,14 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
+  data() {
+    return {
+      removing: false,
+    };
+  },
   computed: {
-    ...mapState([
-      "userID",
-      "response",
-      "isAuthonticated",
-      "showSuccessAlert",
-      "showErrorAlert",
-      "selectedCategory",
-    ]),
     ...mapGetters(["getCategoriesToSelect"]),
     selectedCategory: {
       get() {
@@ -43,12 +41,13 @@ export default {
       },
     },
   },
-
   methods: {
-    ...mapMutations(["fetchData"]),
     ...mapActions(["removeCategory"]),
-    toggleModal(ModalName) {
-      this.$root.$emit("bv::toggle::modal", ModalName, "#btnToggle");
+    async remove() {
+      this.removing = true;
+      await this.removeCategory();
+      this.removing = false;
+      this.$bvModal.hide("removeCategoryModal");
     },
     resetModal() {
       this.selectedCategory = null;

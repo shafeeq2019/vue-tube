@@ -14,14 +14,16 @@
             size="sm"
             variant="danger"
             class="mb-2 iframe-button"
-            @click="removeVideo(videoObj.id)"
+            @click="confirmRemove()"
           >
             <b-icon icon="trash" aria-label="delete"></b-icon>
           </b-button>
           <iframe
             :src="videoObj.data.video.url"
+            :title="videoObj.data.video.title"
             height="100%"
             width="100%"
+            loading="lazy"
             allowfullscreen
           ></iframe>
         </b-col>
@@ -31,30 +33,32 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapActions } from "vuex";
 export default {
-  components: {},
   props: {
-    videoObj: Object,
-  },
-  data() {
-    return {};
-  },
-  computed: {
-    ...mapState([
-      "userID",
-      "response",
-      "isAuthonticated",
-      "showSuccessAlert",
-      "showErrorAlert",
-      "selectedCategory",
-      "videos",
-    ]),
+    videoObj: {
+      type: Object,
+      required: true,
+    },
   },
   methods: {
     ...mapActions(["removeVideo"]),
+    async confirmRemove() {
+      const confirmed = await this.$bvModal.msgBoxConfirm(
+        `Do you really want to delete "${this.videoObj.data.video.title}"?`,
+        {
+          title: "Delete video",
+          okVariant: "danger",
+          okTitle: "Delete",
+          centered: true,
+          size: "sm",
+        }
+      );
+      if (confirmed) {
+        this.removeVideo(this.videoObj.id);
+      }
+    },
   },
-  created() {},
 };
 </script>
 
@@ -73,5 +77,12 @@ export default {
 
 .frame-container:hover .iframe-button {
   display: initial;
+}
+
+/* Touch devices have no hover, so always show the delete button there */
+@media (hover: none) {
+  .iframe-button {
+    display: initial;
+  }
 }
 </style>

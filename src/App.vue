@@ -15,13 +15,13 @@
         </b-container>
       </div>
     </div>
-    <appHeader v-if="isAuthonticated === false">
+    <appHeader v-if="!isAuthenticated">
       <template #buttons>
         <b-button size="sm" class="navbar-button" to="/login">login</b-button>
         <b-button size="sm" class="navbar-button" to="/signUp">Sign Up</b-button>
       </template>
     </appHeader>
-    <appHeader v-else-if="isAuthonticated == true">
+    <appHeader v-else>
       <template #buttons>
         <b-button @click="toggleModal('CatModal')" class="navbar-button" size="sm">Add Category</b-button>
         <b-button @click="toggleModal('FilmModal')" size="sm" class="navbar-button">Add video</b-button>
@@ -36,7 +36,7 @@
 </template>
 <script>
 import GlobalComponents from "./GlobalComponents.js";
-import { mapState, mapMutations, mapGetters, mapActions } from "vuex";
+import { mapState } from "vuex";
 import Cookies from "js-cookie";
 export default {
   components: {
@@ -44,31 +44,21 @@ export default {
   },
   data: function () {
     return {
-      category: "",
       deferredPrompt: null
     };
   },
   computed: {
-    ...mapState([
-      "userID",
-      "response",
-      "isAuthonticated",
-      "showSuccessAlert",
-      "showErrorAlert",
-      "selectedCategory",
-      "loading"
-    ]),
-    ...mapGetters(["getCategoriesToSelect"]),
+    ...mapState(["isAuthenticated", "loading"]),
+  },
+  watch: {
+    // Leave protected pages when the session ends (e.g. sign out in another tab).
+    isAuthenticated(loggedIn) {
+      if (!loggedIn && this.$route.matched.some((r) => r.meta.requiresAuth)) {
+        this.$router.push("/login").catch(() => { });
+      }
+    },
   },
   methods: {
-    ...mapMutations([
-      "logout",
-      "AddCategory",
-      "clearField",
-      "addVideoMutation",
-      "updateLoadingState"
-    ]),
-    ...mapActions(["fetchAllData"]),
     toggleModal(ModalName) {
       this.$root.$emit("bv::toggle::modal", ModalName, "#btnToggle");
     },
@@ -78,6 +68,8 @@ export default {
     },
     async install() {
       this.deferredPrompt.prompt();
+      await this.deferredPrompt.userChoice;
+      this.deferredPrompt = null;
     }
   },
   created() {
@@ -90,8 +82,6 @@ export default {
     window.addEventListener("appinstalled", () => {
       this.deferredPrompt = null;
     });
-    this.updateLoadingState(true);
-    this.fetchAllData();
   },
 };
 </script>
@@ -101,7 +91,7 @@ export default {
 :root {
   --contentMargin: 80px;
   --text_light: hsl(255, 36%, 17%);
-  --bkg_light: hsl(0%, 0%%, 100%);
+  --bkg_light: hsl(0, 0%, 100%);
   --model_bkg_light: #ffff;
   --border_light: #dee2e6;
   --card_light: #ffff;
@@ -193,11 +183,6 @@ iframe {
   margin-top: var(--contentMargin);
 }
 
-/* iframe {
-  border: 1px solid black;
-  border-radius: 4px;
-} */
-
 .text-center {
   text-align: center;
 }
@@ -211,11 +196,6 @@ iframe {
   margin-bottom: 10px;
   border-radius: 8px;
 }
-
-/* .inputs {
-  margin-bottom: 10px;
-  border-radius: 8px;
-} */
 
 .submit-button {
   margin-top: 10px;
