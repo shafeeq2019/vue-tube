@@ -1,23 +1,23 @@
 <template>
-  <BContainer class="content">
-    <BRow class="justify-content-center">
-      <BCol lg="11">
-        <BAlert :model-value="!!errorMessage" variant="danger">{{ errorMessage }}</BAlert>
-        <h3 class="heading">Login</h3>
-        <BForm @submit.prevent="signIn()">
-          <BFormInput v-model="email" type="email" size="lg" placeholder="Enter your Email" autocomplete="email" />
-          <BFormInput
-            v-model="password"
-            type="password"
-            size="lg"
-            placeholder="Enter your Password"
-            autocomplete="current-password"
-          />
-          <BButton class="submit-button" type="submit" :disabled="busy">Login</BButton>
-        </BForm>
-      </BCol>
-    </BRow>
-  </BContainer>
+  <AuthLayout compact>
+    <section class="vt-card form-card" aria-labelledby="login-title">
+      <h2 id="login-title" class="vt-display h3 mb-1">Welcome back</h2>
+      <p class="vt-muted mb-4">Sign in to open your library.</p>
+      <BAlert :model-value="!!errorMessage" variant="danger">{{ errorMessage }}</BAlert>
+      <form @submit.prevent="signIn()">
+        <label class="vt-label">
+          Email
+          <input v-model="email" class="vt-input" type="email" placeholder="you@example.com" autocomplete="email" />
+        </label>
+        <label class="vt-label">
+          Password
+          <input v-model="password" class="vt-input" type="password" autocomplete="current-password" />
+        </label>
+        <button class="vt-btn vt-btn-primary vt-btn-lg w-100 mt-2" type="submit" :disabled="busy">Sign in</button>
+      </form>
+      <p class="vt-muted text-center mt-4 mb-0">New here? <RouterLink to="/signUp">Create an account</RouterLink></p>
+    </section>
+  </AuthLayout>
 </template>
 
 <script setup>
@@ -25,6 +25,7 @@ import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase.js";
+import AuthLayout from "../components/AuthLayout.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -65,3 +66,11 @@ async function signIn() {
   }
 }
 </script>
+
+<style scoped>
+.form-card {
+  flex: 1 1 360px;
+  max-width: 440px;
+  padding: clamp(24px, 4vw, 36px);
+}
+</style>

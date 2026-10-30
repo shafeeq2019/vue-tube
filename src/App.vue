@@ -3,43 +3,34 @@
     <BSpinner label="Loading..." />
   </div>
   <div v-else id="apps">
-    <div v-if="deferredPrompt" class="install-prompt">
-      <div class="alert alert-info rounded-0" role="alert">
-        <BContainer fluid>
-          <BRow>
-            <BCol class="d-flex align-items-center" sm="12" md="6">
-              Install this site as an app for a better experience!
-            </BCol>
-            <BCol sm="12" md="6" class="d-flex justify-content-end gap-2">
-              <BButton size="sm" @click="install()">Install</BButton>
-              <BButton size="sm" @click="dismiss()">Dismiss</BButton>
-            </BCol>
-          </BRow>
-        </BContainer>
-      </div>
+    <div v-if="deferredPrompt" class="install-prompt" role="region" aria-label="Install app">
+      <span>Install VueTube as an app to share videos straight from YouTube.</span>
+      <span class="d-flex gap-2">
+        <button type="button" class="vt-btn vt-btn-sm install-button" @click="install()">Install</button>
+        <button type="button" class="vt-btn vt-btn-sm" @click="dismiss()">Not now</button>
+      </span>
     </div>
-    <AppHeader>
-      <template v-if="!store.isAuthenticated" #buttons>
-        <BButton size="sm" class="navbar-button" to="/login">Login</BButton>
-        <BButton size="sm" class="navbar-button" to="/signUp">Sign Up</BButton>
-      </template>
-      <template v-else #buttons>
-        <BButton size="sm" variant="primary" class="navbar-button" @click="store.openModal('addVideo')">Add video</BButton>
-        <BDropdown size="sm" variant="secondary" text="Categories" class="navbar-button">
-          <BDropdownItem @click="store.openModal('addCategory')">Add category</BDropdownItem>
-          <BDropdownItem @click="store.openModal('renameCategory')">Rename category</BDropdownItem>
-          <BDropdownItem @click="store.openModal('removeCategory')">Remove category</BDropdownItem>
-        </BDropdown>
-      </template>
-    </AppHeader>
-    <template v-if="store.isAuthenticated">
+
+    <div v-if="store.isAuthenticated" class="shell">
+      <AppSidebar class="d-none d-lg-flex" />
+      <div class="shell-main">
+        <AppTopBar />
+        <RouterView />
+      </div>
+      <button type="button" class="vt-btn vt-btn-primary fab d-lg-none" @click="store.openModal('addVideo')">
+        <AppIcon name="plus" :size="18" />
+        Add video
+      </button>
       <AddCategoryModal />
       <RenameCategoryModal />
       <RemoveCategoryModal />
       <AddVideoModal />
       <EditVideoModal />
+    </div>
+    <template v-else>
+      <AppHeader />
+      <RouterView />
     </template>
-    <RouterView />
   </div>
 </template>
 
@@ -49,6 +40,9 @@ import { useRoute, useRouter } from "vue-router";
 import Cookies from "js-cookie";
 import { useAppStore } from "./stores/app.js";
 import AppHeader from "./components/AppHeader.vue";
+import AppSidebar from "./components/AppSidebar.vue";
+import AppTopBar from "./components/AppTopBar.vue";
+import AppIcon from "./components/AppIcon.vue";
 import AddCategoryModal from "./components/AddCategoryModal.vue";
 import AddVideoModal from "./components/AddVideoModal.vue";
 import RemoveCategoryModal from "./components/RemoveCategoryModal.vue";
@@ -104,44 +98,51 @@ onBeforeUnmount(() => {
 </script>
 
 <style>
-:root {
-  --contentMargin: 80px;
+.shell {
+  display: flex;
+  min-height: 100vh;
 }
 
-iframe {
-  border: 1px solid var(--bs-border-color);
-  border-radius: 4px;
+.shell-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+  padding: 24px clamp(16px, 3vw, 40px) 120px;
 }
 
-.content {
-  margin-top: var(--contentMargin);
+.fab {
+  position: fixed;
+  right: 20px;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  z-index: 10;
+  height: 56px;
+  padding: 0 22px 0 18px;
+  border-radius: 28px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
 }
 
-.heading {
-  margin-bottom: 20px;
+.install-prompt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px clamp(16px, 3vw, 40px);
+  background: var(--vt-accent);
+  color: var(--vt-on-accent);
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.form-control,
-.form-select {
-  margin-bottom: 10px;
-  border-radius: 8px;
+.install-prompt .vt-btn {
+  color: var(--vt-on-accent);
+  border-color: rgba(11, 11, 15, 0.35);
 }
 
-.submit-button {
-  margin-top: 10px;
-}
-
-.navbar-button {
-  margin: 3px;
-}
-
-.install-prompt .alert {
-  margin-bottom: 0;
-}
-
-.install-prompt .alert-info {
+.install-prompt .install-button {
+  background: var(--vt-on-accent);
   color: #fff;
-  background-color: #0089f3;
-  border-color: #0089f3;
 }
 </style>

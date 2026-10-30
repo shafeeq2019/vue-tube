@@ -1,17 +1,18 @@
 <template>
-  <BModal v-model="isOpen" centered title="Edit Video" @hidden="resetModal()">
+  <BModal v-model="isOpen" centered title="Edit video" @hidden="resetModal()">
     <BAlert variant="danger" :model-value="!!errorMessage" dismissible @close="errorMessage = ''">
       {{ errorMessage }}
     </BAlert>
-    <BForm @submit.prevent="submit()">
-      <label class="form-label" for="edit-video-title">Title</label>
-      <BFormInput id="edit-video-title" v-model="title" type="text" />
-      <label class="form-label" for="edit-video-category">Category</label>
-      <BFormSelect id="edit-video-category" v-model="categoryID" :options="store.categoryOptions" />
-    </BForm>
+    <form id="edit-video-form" @submit.prevent="submit()">
+      <label class="vt-label">
+        Title
+        <input v-model="title" class="vt-input" type="text" maxlength="200" />
+      </label>
+    </form>
+    <CategoryPicker v-model="categoryID" />
     <template #footer>
-      <BButton size="sm" variant="secondary" @click="store.closeModal()">Cancel</BButton>
-      <BButton size="sm" variant="primary" @click="submit()">Save</BButton>
+      <button type="button" class="vt-btn vt-btn-ghost" @click="store.closeModal()">Cancel</button>
+      <button type="submit" form="edit-video-form" class="vt-btn vt-btn-primary">Save</button>
     </template>
   </BModal>
 </template>
@@ -19,6 +20,7 @@
 <script setup>
 import { computed, ref, watch } from "vue";
 import { useAppStore } from "../stores/app.js";
+import CategoryPicker from "./CategoryPicker.vue";
 
 const store = useAppStore();
 const title = ref("");
