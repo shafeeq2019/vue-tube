@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import { auth } from "./firebase.js";
 import { useAppStore } from "./stores/app.js";
 import HomeView from "./views/HomeView.vue";
+import { findYouTubeUrl } from "./utils/video.js";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,6 +37,26 @@ const router = createRouter({
       meta: { hideForAuth: true },
     },
     {
+      // PWA share target (see the manifest in vite.config.js): opens the
+      // "Add video" dialog with the shared link prefilled.
+      path: "/share",
+      name: "share",
+      meta: { requiresAuth: true },
+      // Never rendered: beforeEnter always redirects. It runs after the
+      // global auth guard, so the share survives a detour via the login.
+      component: () => import("./views/DashboardView.vue"),
+      beforeEnter: (to) => {
+        const { title = "", text = "", url = "" } = to.query;
+        const sharedUrl = findYouTubeUrl(String(url)) || findYouTubeUrl(String(text));
+        if (sharedUrl) {
+          const store = useAppStore();
+          store.pendingShare = { title: String(title).trim(), url: sharedUrl };
+          store.openModal("addVideo");
+        }
+        return { name: "dashboard", query: {} };
+      },
+    },
+    {
       path: "/:pathMatch(.*)*",
       name: "pageNotFound",
       component: () => import("./views/PageNotFoundView.vue"),
@@ -49,7 +70,8 @@ router.beforeEach(async (to) => {
   // so it is always up to date when navigating right after them.
   const loggedIn = !!auth.currentUser;
   if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
-    return { name: "login" };
+    // Come back here after logging in (e.g. to finish a share).
+    return { name: "login", query: { redirect: to.fullPath } };
   }
   if (to.matched.some((record) => record.meta.hideForAuth) && loggedIn) {
     return { name: "dashboard" };

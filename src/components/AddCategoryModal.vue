@@ -42,6 +42,10 @@ async function submit() {
     errorMessage.value = "Please enter a name for the new category";
     return;
   }
+  if (name.length > 100) {
+    errorMessage.value = "The name can be at most 100 characters long";
+    return;
+  }
   errorMessage.value = "";
   saving.value = true;
   try {

@@ -4,6 +4,13 @@ In this app you can save videos in categories to find them quickly later.
 
 Built with **Vue 3**, **Vite**, **Pinia**, **Vue Router**, **bootstrap-vue-next** (Bootstrap 5) and **Firebase** (Auth + Firestore). It can be installed as a PWA.
 
+## Features
+- Save YouTube videos in your own categories; rename categories, edit video titles and move videos between categories
+- Changes sync in real time across all your open tabs and devices
+- Fast dashboard: videos show a thumbnail and only load the player when you click play
+- Share videos straight from the YouTube app: install VueTube as an app, then use *Share → VueTube*
+- Dark mode, swipe between categories on touch screens
+
 ## Demo
 https://vuetube-1199b.firebaseapp.com/
 
@@ -39,6 +46,9 @@ npm run preview
 npm test
 npm run lint
 
+# test the Firestore security rules (starts the Firestore emulator, needs Java)
+npm run test:rules
+
 # build & deploy hosting and Firestore rules on firebase
 npm run deploy
 ```
@@ -47,5 +57,7 @@ npm run deploy
 Set `VITE_FIREBASE_EMULATORS=true` in `.env.local` (any `VITE_FIREBASE_PROJECT_ID` starting with `demo-` works without a real project) and run:
 
 ``` bash
-npx firebase-tools emulators:start --project demo-vuetube
+npx firebase emulators:start --project demo-vuetube
 ```
+
+CI (GitHub Actions) runs lint, unit tests, the build and the security rule tests on every pull request.

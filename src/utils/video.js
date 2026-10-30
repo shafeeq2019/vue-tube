@@ -14,3 +14,27 @@ export function toYouTubeEmbedUrl(url) {
   }
   return "https://www.youtube.com/embed/" + id;
 }
+
+/** Extracts the video id from a stored embed URL. */
+export function videoIdFromEmbedUrl(embedUrl) {
+  const match = /\/embed\/([A-Za-z0-9_-]+)/.exec(embedUrl || "");
+  return match ? match[1] : null;
+}
+
+/** The YouTube thumbnail image for an embed URL, or null. */
+export function thumbnailUrl(embedUrl) {
+  const id = videoIdFromEmbedUrl(embedUrl);
+  return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : null;
+}
+
+/**
+ * Finds the first YouTube video link in a shared text, e.g. what the
+ * YouTube app sends to the share target ("Check this out https://youtu.be/…").
+ */
+export function findYouTubeUrl(text) {
+  if (typeof text !== "string") {
+    return null;
+  }
+  const candidates = text.match(/https?:\/\/[^\s]+/g) || [];
+  return candidates.find((candidate) => toYouTubeEmbedUrl(candidate)) || null;
+}
