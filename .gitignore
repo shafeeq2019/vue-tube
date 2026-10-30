@@ -23,3 +23,6 @@ yarn-error.log*
 # Firebase
 .firebase/
 /dev-dist
+
+# Firebase emulator logs
+*-debug.log
