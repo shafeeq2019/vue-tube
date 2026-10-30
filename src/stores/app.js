@@ -46,6 +46,37 @@ export function sortByCreation(entries) {
   );
 }
 
+// Search matches every word of the query anywhere in the title, ignoring case.
+export function searchVideos(videos, searchQuery) {
+  const words = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+  if (words.length === 0) {
+    return [];
+  }
+  return videos.filter((video) => {
+    const title = String(video.data.video?.title || "").toLowerCase();
+    return words.every((word) => title.includes(word));
+  });
+}
+
+const ACTIVE_CATEGORY_KEY = "vuetube.category";
+
+// localStorage is missing in the unit tests and can throw in private mode.
+function loadActiveCategory() {
+  try {
+    return localStorage.getItem(ACTIVE_CATEGORY_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function saveActiveCategory(categoryID) {
+  try {
+    localStorage.setItem(ACTIVE_CATEGORY_KEY, categoryID);
+  } catch {
+    // Remembering the category is only a convenience.
+  }
+}
+
 export const useAppStore = defineStore("app", {
   state: () => ({
     userID: "",
@@ -53,7 +84,9 @@ export const useAppStore = defineStore("app", {
     isAuthenticated: false,
     categories: [],
     videos: [],
-    selectedCategory: null,
+    // The category shown on the dashboard; see the activeCategory getter
+    activeCategoryID: loadActiveCategory(),
+    searchQuery: "",
     loading: true,
     // Which modal is open: "addCategory" | "renameCategory" | "removeCategory"
     // | "addVideo" | "editVideo" | null
@@ -77,6 +110,12 @@ export const useAppStore = defineStore("app", {
       }
       return grouped;
     },
+    // Falls back to the first category, e.g. after the active one was removed.
+    activeCategory: (state) =>
+      state.categories.find((c) => c.id === state.activeCategoryID) ||
+      state.categories[0] ||
+      null,
+    searchResults: (state) => searchVideos(state.videos, state.searchQuery),
   },
   actions: {
     setUser(user) {
@@ -87,9 +126,13 @@ export const useAppStore = defineStore("app", {
     clearUserData() {
       this.categories = [];
       this.videos = [];
-      this.selectedCategory = null;
+      this.searchQuery = "";
       this.activeModal = null;
       this.editingVideo = null;
+    },
+    setActiveCategory(categoryID) {
+      this.activeCategoryID = categoryID;
+      saveActiveCategory(categoryID);
     },
     openModal(name) {
       this.activeModal = name;
@@ -171,13 +214,16 @@ export const useAppStore = defineStore("app", {
     },
     // The write actions throw on failure so the calling modal can show an
     // error. The listeners pick up the changes, so nothing is refetched.
+    // Returns the id of the new category.
     async addCategory(categoryName) {
-      await setDoc(doc(collection(db, "categories")), {
+      const ref = doc(collection(db, "categories"));
+      await setDoc(ref, {
         userID: this.userID,
         categoryName: categoryName,
         videos: [],
         createdAt: serverTimestamp(),
       });
+      return ref.id;
     },
     async renameCategory(categoryID, categoryName) {
       await updateDoc(doc(db, "categories", categoryID), { categoryName });
@@ -194,9 +240,6 @@ export const useAppStore = defineStore("app", {
       querySnapshot.forEach((v) => batch.delete(v.ref));
       batch.delete(doc(db, "categories", categoryID));
       await batch.commit();
-      if (this.selectedCategory === categoryID) {
-        this.selectedCategory = null;
-      }
     },
     async addVideo(categoryID, video) {
       await setDoc(doc(collection(db, "videos")), {

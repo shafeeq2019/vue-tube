@@ -1,48 +1,54 @@
 <template>
-  <BNavbar toggleable="lg" variant="dark" data-bs-theme="dark" class="border-bottom">
-    <BNavbarBrand :to="store.isAuthenticated ? '/dashboard' : '/'">VueTube</BNavbarBrand>
-
-    <BNavbarToggle target="nav-collapse" />
-
-    <BCollapse id="nav-collapse" is-nav>
-      <BNavbarNav>
-        <BNavItem :to="store.isAuthenticated ? '/dashboard' : '/'">Home</BNavItem>
-        <BNavItem to="/about">About</BNavItem>
-      </BNavbarNav>
-
-      <!-- Right aligned nav items -->
-      <BNavbarNav class="ms-auto align-items-lg-center">
-        <BNavForm>
-          <slot name="buttons"></slot>
-        </BNavForm>
-        <BNavItemDropdown v-if="store.isAuthenticated" end class="ms-lg-1">
-          <template #button-content><em>{{ store.userEmail }}</em></template>
-          <BDropdownItem @click="toggleTheme()">{{ theme === "dark" ? "Light" : "Dark" }} Mode</BDropdownItem>
-          <BDropdownItem @click="signOut()">Sign Out</BDropdownItem>
-        </BNavItemDropdown>
-        <BNavItem v-else @click="toggleTheme()">{{ theme === "dark" ? "Light" : "Dark" }} Mode</BNavItem>
-      </BNavbarNav>
-    </BCollapse>
-  </BNavbar>
+  <header class="header">
+    <AppLogo />
+    <nav aria-label="Main" class="nav">
+      <RouterLink to="/about" class="nav-link-plain d-none d-sm-inline">About</RouterLink>
+      <RouterLink to="/login" class="nav-link-plain">Log in</RouterLink>
+      <RouterLink to="/signUp" class="vt-btn vt-btn-primary vt-btn-sm">Sign up</RouterLink>
+      <button
+        type="button"
+        class="vt-icon-btn"
+        :aria-label="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+        @click="saveTheme(theme === 'dark' ? 'light' : 'dark')"
+      >
+        <AppIcon :name="theme === 'dark' ? 'sun' : 'moon'" :size="18" />
+      </button>
+    </nav>
+  </header>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useAppStore } from "../stores/app.js";
-import { getCurrentTheme, saveTheme } from "../theme.js";
-
-const store = useAppStore();
-const router = useRouter();
-const theme = ref(getCurrentTheme());
-
-async function signOut() {
-  await store.logout();
-  router.push("/");
-}
-
-function toggleTheme() {
-  theme.value = theme.value === "dark" ? "light" : "dark";
-  saveTheme(theme.value);
-}
+import { theme, saveTheme } from "../theme.js";
+import AppLogo from "./AppLogo.vue";
+import AppIcon from "./AppIcon.vue";
 </script>
+
+<style scoped>
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px clamp(16px, 4vw, 40px);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 20px);
+  font-size: 14px;
+}
+
+.nav-link-plain {
+  color: var(--vt-text-2);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-link-plain:hover,
+.nav-link-plain.router-link-active {
+  color: var(--vt-text);
+}
+</style>

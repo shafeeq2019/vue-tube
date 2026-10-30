@@ -1,18 +1,27 @@
 <template>
-  <BContainer class="content">
-    <BRow class="justify-content-center">
-      <BCol lg="11">
-        <BAlert :model-value="!!errorMessage" variant="danger">{{ errorMessage }}</BAlert>
-        <h3 class="heading">Sign Up</h3>
-        <BForm @submit.prevent="signUp()">
-          <BFormInput v-model="name" type="text" placeholder="Enter your name" autocomplete="name" />
-          <BFormInput v-model="email" type="email" placeholder="Enter your Email" autocomplete="email" />
-          <BFormInput v-model="password" type="password" placeholder="Enter your Password" autocomplete="new-password" />
-          <BButton type="submit" class="submit-button" :disabled="busy">Sign Up</BButton>
-        </BForm>
-      </BCol>
-    </BRow>
-  </BContainer>
+  <AuthLayout compact>
+    <section class="vt-card form-card" aria-labelledby="signup-title">
+      <h2 id="signup-title" class="vt-display h3 mb-1">Create your account</h2>
+      <p class="vt-muted mb-4">Free, and it will always be.</p>
+      <BAlert :model-value="!!errorMessage" variant="danger">{{ errorMessage }}</BAlert>
+      <form @submit.prevent="signUp()">
+        <label class="vt-label">
+          Name
+          <input v-model="name" class="vt-input" type="text" autocomplete="name" />
+        </label>
+        <label class="vt-label">
+          Email
+          <input v-model="email" class="vt-input" type="email" placeholder="you@example.com" autocomplete="email" />
+        </label>
+        <label class="vt-label">
+          Password
+          <input v-model="password" class="vt-input" type="password" placeholder="At least 6 characters" autocomplete="new-password" />
+        </label>
+        <button type="submit" class="vt-btn vt-btn-primary vt-btn-lg w-100 mt-2" :disabled="busy">Create account</button>
+      </form>
+      <p class="vt-muted text-center mt-4 mb-0">Already have an account? <RouterLink to="/login">Log in</RouterLink></p>
+    </section>
+  </AuthLayout>
 </template>
 
 <script setup>
@@ -21,6 +30,7 @@ import { useRouter } from "vue-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase.js";
+import AuthLayout from "../components/AuthLayout.vue";
 
 const router = useRouter();
 const name = ref("");
@@ -57,3 +67,11 @@ async function signUp() {
   }
 }
 </script>
+
+<style scoped>
+.form-card {
+  flex: 1 1 360px;
+  max-width: 440px;
+  padding: clamp(24px, 4vw, 36px);
+}
+</style>

@@ -1,60 +1,67 @@
 <template>
-  <BModal v-model="isOpen" centered title="Remove Category" @hidden="resetModal()">
-    <div v-if="store.categoryOptions.length > 0">
-      <BAlert variant="danger" :model-value="!!errorMessage" dismissible @close="errorMessage = ''">
-        {{ errorMessage }}
-      </BAlert>
-      <BFormSelect v-model="selectedCategory" :options="store.categoryOptions">
-        <template #first>
-          <option :value="null" disabled>Please select a category</option>
-        </template>
-      </BFormSelect>
-      <small v-if="selectedCategory">All videos in this category will be deleted as well.</small>
-    </div>
-    <BAlert v-else :model-value="true" variant="warning">You don't have any categories to remove!</BAlert>
+  <BModal v-model="isOpen" centered title="Delete category" @hidden="resetModal()">
+    <BAlert variant="danger" :model-value="!!errorMessage" dismissible @close="errorMessage = ''">
+      {{ errorMessage }}
+    </BAlert>
+    <p v-if="category" class="mb-0">
+      Delete “{{ category.data.categoryName }}”?
+      <template v-if="videoCount > 0">
+        Its {{ videoCount === 1 ? "video" : videoCount + " videos" }} will be deleted as well.
+      </template>
+    </p>
     <template #footer>
-      <BButton
-        v-if="store.categoryOptions.length > 0"
-        size="sm"
-        variant="danger"
-        :disabled="!selectedCategory || removing"
-        @click="remove()"
-      >
-        Remove
-      </BButton>
+      <button type="button" class="vt-btn vt-btn-ghost" @click="store.closeModal()">Cancel</button>
+      <button type="button" class="vt-btn vt-btn-danger-solid" :disabled="!category || removing" @click="remove()">
+        Delete
+      </button>
     </template>
   </BModal>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useAppStore } from "../stores/app.js";
 
 const store = useAppStore();
-const selectedCategory = ref(null);
 const errorMessage = ref("");
 const removing = ref(false);
+// Fixed when the modal opens, so it never switches to another category.
+const category = ref(null);
 
 const isOpen = computed({
   get: () => store.activeModal === "removeCategory",
   set: (open) => (open ? store.openModal("removeCategory") : store.closeModal()),
 });
 
+const videoCount = computed(() =>
+  category.value ? (store.videosByCategory[category.value.id] || []).length : 0
+);
+
+watch(
+  isOpen,
+  (open) => {
+    if (open) {
+      category.value = store.activeCategory;
+    }
+  },
+  { immediate: true }
+);
+
 async function remove() {
   removing.value = true;
   try {
-    await store.removeCategory(selectedCategory.value);
+    await store.removeCategory(category.value.id);
     store.closeModal();
   } catch (error) {
     console.error(error);
-    errorMessage.value = "The category could not be removed. Please try again.";
+    errorMessage.value = "The category could not be deleted. Please try again.";
   } finally {
     removing.value = false;
   }
 }
 
 function resetModal() {
-  selectedCategory.value = null;
+  category.value = null;
   errorMessage.value = "";
 }
 </script>

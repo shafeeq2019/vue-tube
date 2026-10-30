@@ -4,7 +4,7 @@ import { createPinia, setActivePinia } from "pinia";
 // The store only needs the Firebase handles, not a real Firebase project.
 vi.mock("../../src/firebase.js", () => ({ auth: {}, db: {} }));
 
-const { useAppStore, sortByCreation } = await import("../../src/stores/app.js");
+const { useAppStore, sortByCreation, searchVideos } = await import("../../src/stores/app.js");
 
 describe("app store", () => {
   beforeEach(() => {
@@ -58,6 +58,41 @@ describe("app store", () => {
     store.editVideo(video);
     expect(store.editingVideo).toStrictEqual(video);
     expect(store.activeModal).toBe("editVideo");
+  });
+});
+
+describe("active category", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("falls back to the first category", () => {
+    const store = useAppStore();
+    expect(store.activeCategory).toBeNull();
+    store.categories = [
+      { id: "a", data: {} },
+      { id: "b", data: {} },
+    ];
+    expect(store.activeCategory.id).toBe("a");
+    store.setActiveCategory("b");
+    expect(store.activeCategory.id).toBe("b");
+    store.setActiveCategory("removed");
+    expect(store.activeCategory.id).toBe("a");
+  });
+});
+
+describe("searchVideos", () => {
+  const video = (id, title) => ({ id, data: { video: { title } } });
+  const videos = [video("1", "Lo-fi beats to study"), video("2", "Vue 3 Tutorial"), video("3", "Study with me")];
+
+  it("matches every word, ignoring case and order", () => {
+    expect(searchVideos(videos, "study").map((v) => v.id)).toEqual(["1", "3"]);
+    expect(searchVideos(videos, "  STUDY lo-fi ").map((v) => v.id)).toEqual(["1"]);
+    expect(searchVideos(videos, "tutorial vue").map((v) => v.id)).toEqual(["2"]);
+  });
+
+  it("finds nothing for an empty query", () => {
+    expect(searchVideos(videos, "   ")).toEqual([]);
   });
 });
 

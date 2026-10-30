@@ -6,10 +6,11 @@ Built with **Vue 3**, **Vite**, **Pinia**, **Vue Router**, **bootstrap-vue-next*
 
 ## Features
 - Save YouTube videos in your own categories; rename categories, edit video titles and move videos between categories
+- Search all your videos by title and see when each one was added
 - Changes sync in real time across all your open tabs and devices
 - Fast dashboard: videos show a thumbnail and only load the player when you click play
 - Share videos straight from the YouTube app: install VueTube as an app, then use *Share → VueTube*
-- Dark mode, swipe between categories on touch screens
+- Modern dark and light theme, a sidebar on desktop and swipeable category chips on phones
 
 ## Demo
 https://vuetube-1199b.firebaseapp.com/

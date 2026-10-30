@@ -1,69 +1,25 @@
 <template>
-  <div>
-    <section class="page_404">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-sm-6 text-center">
-            <div class="four_zero_four_bg">
-              <h1 class="text-center">404</h1>
-            </div>
-            <div class="contant_box_404">
-              <h3 class="h2">
-                Look like you're lost
-              </h3>
-              <p>The page you are looking for is not available!</p>
-              <router-link class="link_404" to="/">Go to Home</router-link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
+  <main class="not-found">
+    <p class="code vt-display" aria-hidden="true">404</p>
+    <h1 class="vt-display h2">Looks like you're lost</h1>
+    <p class="vt-muted">The page you are looking for is not available.</p>
+    <RouterLink to="/" class="vt-btn vt-btn-primary">Go to home</RouterLink>
+  </main>
 </template>
 
 <style scoped>
-/*======================
-    404 page
-=======================*/
-.page_404 {
-  padding: 50px 0;
-  color: var(--bs-body-color);
-  background: var(--bs-body-bg);
-  font-family: "Arvo", serif;
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(48px, 10vw, 120px) 16px;
+  text-align: center;
 }
 
-.page_404 img {
-  width: 100%;
-}
-
-.four_zero_four_bg {
-  background-image: url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif);
-  height: 400px;
-  background-position: center;
-}
-
-.four_zero_four_bg h1 {
-  font-size: 80px;
-}
-
-.four_zero_four_bg h3 {
-  font-size: 80px;
-}
-
-.link_404 {
-  color: #fff !important;
-  padding: 10px 20px;
-  background: #39ac31;
-  margin: 20px 0;
-  display: inline-block;
-  border-radius: 0.2rem;
-  font-weight: 400;
-  font-size: 1rem;
-  line-height: 1.5;
-  font-family: sans-serif;
-}
-
-.contant_box_404 {
-  margin-top: -50px;
+.code {
+  margin: 0;
+  font-size: clamp(96px, 20vw, 180px);
+  line-height: 1;
+  color: var(--vt-accent);
 }
 </style>
