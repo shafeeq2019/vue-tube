@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useAppStore } from "../stores/app.js";
 import { toYouTubeEmbedUrl } from "../utils/video.js";
 
@@ -54,6 +54,10 @@ async function submit() {
       "Please enter a name and the URL for the new video and select a category";
     return;
   }
+  if (title.length > 200) {
+    errorMessage.value = "The name can be at most 200 characters long";
+    return;
+  }
   const embedUrl = toYouTubeEmbedUrl(videoURL.value);
   if (!embedUrl) {
     errorMessage.value = "Please enter a valid YouTube video URL";
@@ -73,6 +77,20 @@ async function submit() {
     saving.value = false;
   }
 }
+
+// Prefill the form with a video shared via the PWA share target. A watcher
+// (not the modal's show event) also covers a modal that mounts already open.
+watch(
+  () => [isOpen.value, store.pendingShare],
+  ([open, shared]) => {
+    if (open && shared) {
+      videoTitle.value = shared.title || "";
+      videoURL.value = shared.url || "";
+      store.pendingShare = null;
+    }
+  },
+  { immediate: true }
+);
 
 function resetModal() {
   videoTitle.value = "";

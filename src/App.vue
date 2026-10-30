@@ -24,15 +24,20 @@
         <BButton size="sm" class="navbar-button" to="/signUp">Sign Up</BButton>
       </template>
       <template v-else #buttons>
-        <BButton size="sm" class="navbar-button" @click="store.openModal('addCategory')">Add Category</BButton>
-        <BButton size="sm" class="navbar-button" @click="store.openModal('addVideo')">Add video</BButton>
-        <BButton size="sm" class="navbar-button" @click="store.openModal('removeCategory')">Remove a category</BButton>
+        <BButton size="sm" variant="primary" class="navbar-button" @click="store.openModal('addVideo')">Add video</BButton>
+        <BDropdown size="sm" variant="secondary" text="Categories" class="navbar-button">
+          <BDropdownItem @click="store.openModal('addCategory')">Add category</BDropdownItem>
+          <BDropdownItem @click="store.openModal('renameCategory')">Rename category</BDropdownItem>
+          <BDropdownItem @click="store.openModal('removeCategory')">Remove category</BDropdownItem>
+        </BDropdown>
       </template>
     </AppHeader>
     <template v-if="store.isAuthenticated">
       <AddCategoryModal />
-      <AddVideoModal />
+      <RenameCategoryModal />
       <RemoveCategoryModal />
+      <AddVideoModal />
+      <EditVideoModal />
     </template>
     <RouterView />
   </div>
@@ -47,6 +52,8 @@ import AppHeader from "./components/AppHeader.vue";
 import AddCategoryModal from "./components/AddCategoryModal.vue";
 import AddVideoModal from "./components/AddVideoModal.vue";
 import RemoveCategoryModal from "./components/RemoveCategoryModal.vue";
+import RenameCategoryModal from "./components/RenameCategoryModal.vue";
+import EditVideoModal from "./components/EditVideoModal.vue";
 
 const store = useAppStore();
 const route = useRoute();

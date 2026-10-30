@@ -22,11 +22,20 @@
 
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase.js";
 
+const route = useRoute();
 const router = useRouter();
+
+// Only follow app-internal redirects ("/share?…"), never "//evil.example".
+function redirectTarget() {
+  const target = route.query.redirect;
+  return typeof target === "string" && target.startsWith("/") && !target.startsWith("//")
+    ? target
+    : "/dashboard";
+}
 const email = ref("");
 const password = ref("");
 const errorMessage = ref("");
@@ -48,7 +57,7 @@ async function signIn() {
   busy.value = true;
   try {
     await signInWithEmailAndPassword(auth, email.value, password.value);
-    router.push("/dashboard");
+    router.push(redirectTarget());
   } catch (error) {
     errorMessage.value = errorMessages[error.code] || error.message;
   } finally {

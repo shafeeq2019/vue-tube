@@ -8,27 +8,55 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function validCategoryName(name) {
+      return name is string && name.size() > 0 && name.size() <= 100;
+    }
+
+    function validVideo(data) {
+      return data.video.title is string
+        && data.video.title.size() > 0
+        && data.video.title.size() <= 200
+        && data.video.url is string
+        && data.video.url.matches('https://www[.]youtube[.]com/embed/[A-Za-z0-9_-]+');
+    }
+
+    // Videos may only be put into a category of the same user.
+    function ownsCategory(categoryId) {
+      return categoryId is string
+        && get(/databases/$(database)/documents/categories/$(categoryId)).data.userID == request.auth.uid;
+    }
+
+    function onlyChanges(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
     match /categories/{categoryId} {
       allow read, delete: if signedIn() && resource.data.userID == request.auth.uid;
       allow create: if signedIn()
         && request.resource.data.userID == request.auth.uid
-        && request.resource.data.categoryName is string
-        && request.resource.data.categoryName.size() > 0
-        && request.resource.data.categoryName.size() <= 100;
+        && validCategoryName(request.resource.data.categoryName)
+        && request.resource.data.createdAt == request.time;
+      // Renaming is the only supported change.
       allow update: if signedIn()
         && resource.data.userID == request.auth.uid
-        && request.resource.data.userID == request.auth.uid;
+        && onlyChanges(['categoryName'])
+        && validCategoryName(request.resource.data.categoryName);
     }
 
     match /videos/{videoId} {
       allow read, delete: if signedIn() && resource.data.userID == request.auth.uid;
       allow create: if signedIn()
         && request.resource.data.userID == request.auth.uid
-        && request.resource.data.video.url is string
-        && request.resource.data.video.url.matches('https://www[.]youtube[.]com/embed/[A-Za-z0-9_-]+');
+        && validVideo(request.resource.data)
+        && ownsCategory(request.resource.data.categoryID)
+        && request.resource.data.createdAt == request.time;
+      // Changing the title and moving to another category; the URL stays.
       allow update: if signedIn()
         && resource.data.userID == request.auth.uid
-        && request.resource.data.userID == request.auth.uid;
+        && onlyChanges(['video', 'categoryID'])
+        && request.resource.data.video.url == resource.data.video.url
+        && validVideo(request.resource.data)
+        && ownsCategory(request.resource.data.categoryID);
     }
 
     match /users/{userId} {

@@ -25,6 +25,13 @@ export default defineConfig({
         background_color: "#ffffff",
         display: "standalone",
         start_url: "/",
+        // Lets the installed app appear in the system share sheet,
+        // e.g. "Share -> VueTube" in the YouTube app.
+        share_target: {
+          action: "/share",
+          method: "GET",
+          params: { title: "title", text: "text", url: "url" },
+        },
         icons: [
           { src: "img/icons/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
           { src: "img/icons/android-chrome-512x512.png", sizes: "512x512", type: "image/png" },
@@ -64,5 +71,6 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    include: ["tests/unit/**/*.test.js"],
   },
 });

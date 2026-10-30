@@ -11,12 +11,12 @@
               md="6"
               class="mb-5"
             >
-              <VideoCard :video="video" @remove="confirmDelete($event)" />
+              <VideoCard :video="video" @edit="store.editVideo($event)" @remove="confirmDelete($event)" />
             </BCol>
           </BRow>
           <p v-if="!store.videosByCategory[category.id]" class="text-body-secondary">
             No videos in this category yet.
-            <BLink @click="store.openModal('addVideo')">Add one</BLink>
+            <BLink @click="addVideoTo(category.id)">Add one</BLink>
           </p>
         </BContainer>
       </BTab>
@@ -60,6 +60,11 @@ let touchEndX = 0;
 watch(tabIndex, (index) => {
   localStorage.setItem(TAB_INDEX_KEY, index);
 });
+
+function addVideoTo(categoryID) {
+  store.selectedCategory = categoryID;
+  store.openModal("addVideo");
+}
 
 function confirmDelete(video) {
   videoToDelete.value = video;
