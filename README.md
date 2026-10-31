@@ -22,13 +22,13 @@ VueTube started as a project to learn and practice Vue.js and Firebase. It is bu
 |---|---|
 | <img src="screenshots/desktop-light.webp" alt="Documentaries category in the light theme"> | <img src="screenshots/search-dark.webp" alt="Search results for “vue” from two categories"> |
 
-<p>
+<p align="center">
   <img src="screenshots/mobile-dark.webp" width="260" alt="Phone: category chips and video cards in dark mode">
   &nbsp;&nbsp;
   <img src="screenshots/mobile-share-light.webp" width="260" alt="Phone: a video shared from the YouTube app opens the Add video dialog prefilled">
 </p>
 
-*On the phone: category chips, and a video shared from the YouTube app with the “Add video” dialog already filled in.*
+<p align="center"><em>On the phone: category chips, and a video shared from the YouTube app with the “Add video” dialog already filled in.</em></p>
 
 <img src="screenshots/home-light.webp" alt="VueTube landing page">
 
