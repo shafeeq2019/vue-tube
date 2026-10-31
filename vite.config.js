@@ -16,6 +16,12 @@ export default defineConfig({
     }),
     VitePWA({
       registerType: "autoUpdate",
+      workbox: {
+        // Firebase serves its own pages under /__/ (e.g. the password reset
+        // link from the email, /__/auth/action). Don't answer them with the
+        // app's index.html, or the router shows a 404.
+        navigateFallbackDenylist: [/^\/__\//],
+      },
       includeAssets: ["favicon.ico", "robots.txt", "img/icons/*.png", "img/icons/*.svg"],
       manifest: {
         name: "Vue Tube",
