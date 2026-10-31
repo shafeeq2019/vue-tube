@@ -13,6 +13,9 @@
           Password
           <input v-model="password" class="vt-input" type="password" autocomplete="current-password" />
         </label>
+        <p class="forgot-link">
+          <RouterLink :to="{ name: 'forgotPassword', query: email ? { email } : {} }">Forgot password?</RouterLink>
+        </p>
         <button class="vt-btn vt-btn-primary vt-btn-lg w-100 mt-2" type="submit" :disabled="busy">Sign in</button>
       </form>
       <p class="vt-muted text-center mt-4 mb-0">New here? <RouterLink to="/signUp">Create an account</RouterLink></p>
@@ -26,6 +29,7 @@ import { useRoute, useRouter } from "vue-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase.js";
 import AuthLayout from "../components/AuthLayout.vue";
+import { authErrorMessage } from "../utils/authErrors.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -37,18 +41,11 @@ function redirectTarget() {
     ? target
     : "/dashboard";
 }
-const email = ref("");
+// Prefilled when coming back from the password reset
+const email = ref(typeof route.query.email === "string" ? route.query.email : "");
 const password = ref("");
 const errorMessage = ref("");
 const busy = ref(false);
-
-const errorMessages = {
-  "auth/wrong-password": "Wrong email or password!",
-  "auth/user-not-found": "Wrong email or password!",
-  "auth/invalid-credential": "Wrong email or password!",
-  "auth/invalid-email": "Invalid email!",
-  "auth/too-many-requests": "Too many attempts. Please try again later.",
-};
 
 async function signIn() {
   if (!email.value || !password.value) {
@@ -60,7 +57,7 @@ async function signIn() {
     await signInWithEmailAndPassword(auth, email.value, password.value);
     router.push(redirectTarget());
   } catch (error) {
-    errorMessage.value = errorMessages[error.code] || error.message;
+    errorMessage.value = authErrorMessage(error);
   } finally {
     busy.value = false;
   }
@@ -72,5 +69,11 @@ async function signIn() {
   flex: 1 1 360px;
   max-width: 440px;
   padding: clamp(24px, 4vw, 36px);
+}
+
+.forgot-link {
+  margin: -8px 0 18px;
+  font-size: 13px;
+  text-align: right;
 }
 </style>

@@ -31,6 +31,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase.js";
 import AuthLayout from "../components/AuthLayout.vue";
+import { authErrorMessage } from "../utils/authErrors.js";
 
 const router = useRouter();
 const name = ref("");
@@ -38,13 +39,6 @@ const email = ref("");
 const password = ref("");
 const errorMessage = ref("");
 const busy = ref(false);
-
-const errorMessages = {
-  "auth/weak-password": "Your password should be at least 6 characters!",
-  "auth/email-already-in-use":
-    "This email address is already in use. Please enter a different email address",
-  "auth/invalid-email": "Invalid email address!",
-};
 
 async function signUp() {
   if (!name.value.trim() || !email.value || !password.value) {
@@ -61,7 +55,7 @@ async function signUp() {
     });
     router.push("/dashboard");
   } catch (error) {
-    errorMessage.value = errorMessages[error.code] || error.message;
+    errorMessage.value = authErrorMessage(error);
   } finally {
     busy.value = false;
   }

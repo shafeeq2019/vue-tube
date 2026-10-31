@@ -14,6 +14,7 @@ VueTube started as a project to learn and practice Vue.js and Firebase. It is bu
 - **Fast dashboard**: videos show a thumbnail and only load the YouTube player when you click play.
 - **Share from YouTube**: install VueTube as an app, then use *Share → VueTube* in the YouTube app.
 - **Dark and light theme**, a sidebar on desktop and swipeable category chips on phones.
+- **Forgot your password?** Request a reset link by email from the login page.
 - **Private by default**: Firestore security rules make sure every user can only see and change their own videos.
 
 ## 📸 Screenshots

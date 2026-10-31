@@ -37,6 +37,12 @@ const router = createRouter({
       meta: { hideForAuth: true },
     },
     {
+      path: "/forgotPassword",
+      name: "forgotPassword",
+      component: () => import("./views/ForgotPasswordView.vue"),
+      meta: { hideForAuth: true },
+    },
+    {
       // PWA share target (see the manifest in vite.config.js): opens the
       // "Add video" dialog with the shared link prefilled.
       path: "/share",
