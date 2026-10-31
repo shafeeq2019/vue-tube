@@ -1,20 +1,36 @@
-# Vuetube
-Vuetube is a simple project to learn and practice Vue.js, Pinia state management, Bootstrap 5, and Firebase.
-In this app you can save videos in categories to find them quickly later.
+# VueTube
+Save your favourite YouTube videos in your own categories and find them again in seconds.
 
-Built with **Vue 3**, **Vite**, **Pinia**, **Vue Router**, **bootstrap-vue-next** (Bootstrap 5) and **Firebase** (Auth + Firestore). It can be installed as a PWA.
+VueTube started as a project to learn and practice Vue.js and Firebase. It is built with **Vue 3**, **Vite**, **Pinia**, **Vue Router**, **bootstrap-vue-next** (Bootstrap 5) and **Firebase** (Auth + Firestore), and can be installed as a PWA.
+
+**Live demo:** https://vuetube-1199b.firebaseapp.com/
+
+<img src="screenshots/desktop-dark.webp" alt="VueTube dashboard in dark mode: sidebar with categories and a grid of video thumbnails">
 
 ## Features
-- Save YouTube videos in your own categories; rename categories, edit video titles and move videos between categories
-- Search all your videos by title and see when each one was added
-- Changes sync in real time across all your open tabs and devices
-- Fast dashboard: videos show a thumbnail and only load the player when you click play
-- Share videos straight from the YouTube app: install VueTube as an app, then use *Share → VueTube*
-- Modern dark and light theme, a sidebar on desktop and swipeable category chips on phones
+- **Your own categories**: sort music, documentaries and tutorials onto separate shelves. Rename categories, edit video titles and move videos between categories.
+- **Search** across all your videos, and see when each one was added.
+- **Real-time sync**: changes show up instantly in every open tab and on all your devices.
+- **Fast dashboard**: videos show a thumbnail and only load the YouTube player when you click play.
+- **Share from YouTube**: install VueTube as an app, then use *Share → VueTube* in the YouTube app.
+- **Dark and light theme**, a sidebar on desktop and swipeable category chips on phones.
+- **Private by default**: Firestore security rules make sure every user can only see and change their own videos.
 
-## Demo
-https://vuetube-1199b.firebaseapp.com/
+## 📸 Screenshots
 
+| Light theme | Search across categories |
+|---|---|
+| <img src="screenshots/desktop-light.webp" alt="Documentaries category in the light theme"> | <img src="screenshots/search-dark.webp" alt="Search results for “vue” from two categories"> |
+
+<p>
+  <img src="screenshots/mobile-dark.webp" width="260" alt="Phone: category chips and video cards in dark mode">
+  &nbsp;&nbsp;
+  <img src="screenshots/mobile-share-light.webp" width="260" alt="Phone: a video shared from the YouTube app opens the Add video dialog prefilled">
+</p>
+
+*On the phone: category chips, and a video shared from the YouTube app with the “Add video” dialog already filled in.*
+
+<img src="screenshots/home-light.webp" alt="VueTube landing page">
 
 ## Config
 Copy `.env.example` to `.env.local` and fill in your web app's Firebase configuration
@@ -22,17 +38,12 @@ Copy `.env.example` to `.env.local` and fill in your web app's Firebase configur
 
 The Firestore security rules live in [`firestore.rules`](firestore.rules) and are deployed together with the app.
 
-
-## 📸 Screenshots
-<img src="screenshots/1.png">
-
-
 ## Build Setup
 Requires Node.js 22.12+.
 
 ``` bash
-# install dependencies
-npm install
+# install dependencies (exactly the versions from package-lock.json)
+npm ci
 
 # serve with hot reload at localhost:5173
 npm run dev
@@ -62,3 +73,6 @@ npx firebase emulators:start --project demo-vuetube
 ```
 
 CI (GitHub Actions) runs lint, unit tests, the build and the security rule tests on every pull request.
+
+### Troubleshooting
+**`Cannot find native binding` when running `vite build`**: npm skipped the platform-specific build tools, which mostly happens when `node_modules` was installed on top of an older setup. Reinstall from scratch with `rm -rf node_modules && npm ci`. Also check `node -v` (22.12+ required) and that `node -p "process.arch"` matches your machine (`arm64` on Apple Silicon).
